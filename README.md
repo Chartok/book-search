@@ -2,7 +2,7 @@
 
 ## Description
 
-A simple book search engine that's being refactored from using RESTful API, to Gr aaphQL API with adn Apollo server.
+A simple book search engine that's being refactored from using RESTful API, to GraphQL API with adn Apollo server.
 
 ## Table of Contents
 
