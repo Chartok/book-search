@@ -10,7 +10,7 @@
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"test": "node --test --loader ts-node/esm tests/register.test.ts"
+		"test": "node --import ts-node/esm --test --test-concurrency 4 \"tests/**/*.test.ts\""
 	},
 	"dependencies": {
 		"@apollo/client": "^3.13.8",

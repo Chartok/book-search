@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
-import bookSchema from './Book';
+import bookSchema from './Book.ts';
 
 interface IUser {
 	username: string;
