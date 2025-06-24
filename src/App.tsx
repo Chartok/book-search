@@ -1,9 +1,9 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar.js';
-import HomePage from './pages/HomePage.js';
-import SavedBooks from './pages/SavedBooks.js';
-import LoginForm from './components/LoginForm.js';
-import SignupForm from './components/SignupForm.js';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+import SavedBooks from './pages/SavedBooks';
+import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignupForm';
 
 export default function App() {
 	return (
