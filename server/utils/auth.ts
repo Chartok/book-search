@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const secret = 'mysecretsshhhhh';
 const expiration = '2h';
@@ -12,16 +12,15 @@ export const authMiddleware = ({ req }: { req: Request }) => {
 	//    let user = null;
 	let token = (req.headers.authorization || '').replace(/^Bearer\s+/, '');
 	if (token) {
-		token = token.replace('Bearer', '').trim();
+		token = token.trim();
 		try {
 			const { data } = jwt.verify(token, secret) as { data: JwtPayload };
             console.log('token verified');
 			return { user: data };
 		} catch {
 			console.log('token error; invalid or expired');
-			return { user: null };
 		}
-	};
+	}
 
-	return { user };
+	return { user: null };
 };

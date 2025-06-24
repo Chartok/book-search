@@ -13,7 +13,14 @@ const userSchema = new Schema<IUser>(
 	{
 		username: { type: String, required: true, unique: true },
 		email: { type: String, required: true, unique: true, match: /.+@.+\..+/ },
-		password: { type: String, required: true },
+		password: {
+			type: String,
+			required: true,
+			match: [
+				/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!?._^%$#&*@(){}[\]\s])([A-Za-z\d!?._^%$#&*@(){}[\]\s]{8,})$/,
+				'Password must be at least 8 characters and include letters, numbers, and special characters.',
+			],
+		},
 		savedBooks: [bookSchema],
 	},
 	{
