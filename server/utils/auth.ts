@@ -6,13 +6,7 @@ const expiration = '2h';
 
 export interface AuthRequest extends Request {
 	user?: Record<string, unknown>;
-}
-
-export function authMiddleware(
-	req: AuthRequest,
-	res: Response,
-	next: NextFunction
-) {
+	{
 	let token = req.query.token || req.headers.authorization;
 	if (req.headers.authorization) {
 		token = (token as string).split(' ').pop()?.trim();
@@ -31,6 +25,7 @@ export function authMiddleware(
 	}
 	next();
 }
+
 
 export function signToken({
 	username,
