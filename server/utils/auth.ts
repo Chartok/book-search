@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const secret = 'mysecretsshhhhh';
 const expiration = '2h';
 
+<<<<<<< HEAD
 export interface AuthRequest extends Request {
 	user?: Record<string, unknown>;
 	{
@@ -36,6 +36,26 @@ export function signToken({
 	email: string;
 	_id: string;
 }) {
+=======
+export function signToken({ username, email, _id }) {
+>>>>>>> 6b36f2de9d46905062e2ab1260eedf8f21675362
 	const payload = { username, email, _id };
 	return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }
+
+export const authMiddleware = ({ req }: { req: Request }) => {
+	//    let user = null;
+	let token = (req.headers.authorization || '').replace(/^Bearer\s+/, '');
+	if (token) {
+		token = token.trim();
+		try {
+			const { data } = jwt.verify(token, secret) as { data: JwtPayload };
+            console.log('token verified');
+			return { user: data };
+		} catch {
+			console.log('token error; invalid or expired');
+		}
+	}
+
+	return { user: null };
+};

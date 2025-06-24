@@ -9,22 +9,33 @@
 		"dev": "vite",
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"test": "node --import ts-node/esm --test --test-concurrency 4 \"tests/**/*.test.ts\""
 	},
 	"dependencies": {
 		"@apollo/client": "^3.13.8",
 		"@apollo/server": "^4.12.2",
+<<<<<<< HEAD
+=======
+		"@apollo/subgraph": "^2.11.0",
+>>>>>>> 6b36f2de9d46905062e2ab1260eedf8f21675362
 		"@as-integrations/express4": "^1.1.0",
 		"@emotion/react": "^11.14.0",
 		"@emotion/styled": "^11.14.0",
 		"@mui/material": "^7.1.2",
+		"apollo-datasource-mongodb": "^0.6.0",
 		"axios": "^1.10.0",
+		"bcrypt": "^6.0.0",
 		"body-parser": "^2.2.0",
 		"cors": "^2.8.5",
 		"dotenv": "^16.5.0",
 		"graphql": "^16.11.0",
+		"graphql-tag": "^2.12.6",
 		"jsonwebtoken": "^9.0.2",
 		"jwt-decode": "^4.0.0",
+		"mongodb": "^6.17.0",
+		"mongoose": "^8.16.0",
+		"mongosh": "^2.5.3",
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"react-router-dom": "^7.6.2"
@@ -41,8 +52,10 @@
 		"eslint-plugin-react-hooks": "^5.2.0",
 		"eslint-plugin-react-refresh": "^0.4.19",
 		"globals": "^16.0.0",
+		"mongodb-memory-server": "^10.1.4",
 		"postcss": "^8.5.6",
 		"tailwindcss": "^4.1.10",
+		"ts-node": "^10.9.2",
 		"typescript": "~5.8.3",
 		"typescript-eslint": "^8.30.1",
 		"vite": "^6.3.5"

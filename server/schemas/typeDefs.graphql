@@ -1,6 +1,9 @@
+<<<<<<< HEAD:server/schemas/typeDefs.ts
 import { gql } from 'apollo-server';
 
 const typeDefs = gql`
+=======
+>>>>>>> 6b36f2de9d46905062e2ab1260eedf8f21675362:server/schemas/typeDefs.graphql
 	type Book {
 		bookId: String!
 		authors: [String]
@@ -44,4 +47,3 @@ const typeDefs = gql`
 	}
 `;
 
-export default typeDefs;
