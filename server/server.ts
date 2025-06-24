@@ -1,33 +1,24 @@
-import express from 'express';
-import path from 'path';
 import { ApolloServer } from 'apollo-server-express';
+import { startStandaloneServer } from '@apollo/server/standalone';
+import path from 'path';
 import db from './config/connection';
 import { typeDefs, resolvers } from './schemas';
 import { authMiddleware } from './utils/auth';
 
-const app = express ();
-const PORT = process.env.PORT || 3001;
+interface MyContext {
+    token?: string;
+}
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const PORT = process.env.PORT || 4000;
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: authMiddleware,
+const server = new ApolloServer<MyContext>({ typeDefs, resolvers });
+
+const { url } = await startStandaloneServer(server, {
+    context: async ({ req }) => authMiddleware,
+    listen: { port: 4000 },
 });
 
-async function startApollo() {
-  await server.start();
-  server.applyMiddleware({ app });
-
-
-  if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/dist')));
-  }
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-  });
+console.log(`Apollo/Server ready @${url}`);
 
   db.once('open', () => {
     app.listen(PORT, () => {
