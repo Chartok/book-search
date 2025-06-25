@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TextField, Button, Alert, Stack } from '@mui/material';
 import { useMutation } from '@apollo/client';
-import { ADD_USER } from '../graphql/mutations';
+import { AUTHENTICATE } from '../graphql/mutations';
 import Auth from '../utils/auth';
 
 export default function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
@@ -10,7 +10,7 @@ export default function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
 		email: '',
 		password: '',
 	});
-	const [addUser, { error }] = useMutation(ADD_USER);
+	const [addUser, { error }] = useMutation(AUTHENTICATE);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
