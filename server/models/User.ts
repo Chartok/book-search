@@ -1,51 +1,32 @@
-import { Schema, model } from 'mongoose';
+import { DataTypes, Model, Sequelize } from 'sequelize';
 import bcrypt from 'bcrypt';
-import bookSchema from './Book.ts';
+import type { Book } from './Book.ts';
 
-export interface IUser {
-	_id: string;
+export interface IUser extends Model {
+	id: number;
 	username: string;
 	email: string;
 	password: string;
 	bookCount: number;
-	savedBooks: (typeof bookSchema)[];
+	savedBooks: Book[];
+	isCorrectPassword(password: string): Promise<boolean>;
 }
 
-const userSchema = new Schema<IUser>(
-	{
-		username: { type: String, required: true, unique: true },
-		email: { type: String, required: true, unique: true, match: /.+@.+\..+/ },
-		password: {
-			type: String,
-			required: true,
-			match: [
-				/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!?._^%$#&*@(){}[\]\s])([A-Za-z\d!?._^%$#&*@(){}[\]\s]{8,})$/,
-				'Password must be at least 8 characters and include letters, numbers, and special characters.',
-			],
-		},
-		savedBooks: [bookSchema],
-	},
-	{
-		toJSON: { virtuals: true },
-	}
-);
-
-userSchema.pre('save', async function (next) {
-	if (this.isNew || this.isModified('password')) {
+export function createUserModel(sequelize: Sequelize) {
+	const User = sequelize.define<IUser>('User', {
+		username: { type: DataTypes.STRING, allowNull: false, unique: true },
+		email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } },
+		password: { type: DataTypes.STRING, allowNull: false },
+		savedBooks: { type: DataTypes.JSON },
+	}, {
+		timestamps: true,
+	});
+	User.addHook('beforeCreate', async (user: IUser) => {
 		const saltRounds = 10;
-		this.password = await bcrypt.hash(this.password, saltRounds);
-	}
-	next();
-});
-
-userSchema.methods.isCorrectPassword = async function (password: string) {
-	return bcrypt.compare(password, this.password);
-};
-
-userSchema.virtual('bookCount').get(function () {
-	return this.savedBooks.length;
-});
-
-const User = model<IUser>('User', userSchema);
-
-export default User;
+		user.password = await bcrypt.hash(user.password, saltRounds);
+	});
+	User.prototype.isCorrectPassword = async function(password: string) {
+		return bcrypt.compare(password, this.password);
+	};
+	return User;
+}
