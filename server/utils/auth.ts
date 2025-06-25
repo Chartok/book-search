@@ -8,10 +8,6 @@ export function signToken({ username, email, _id }) {
 	return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }
 
-interface GraphQLContext {
-	user: { _id: string; username: string; email: string } | null;
-}
-
 export const authMiddleware = ({ req }: { req: Request }) => {
 	let token = (req.headers.authorization || '').replace(/^Bearer\s+/, '');
 	if (token) {
