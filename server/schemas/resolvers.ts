@@ -1,10 +1,10 @@
-import { User } from '../models';
-import { signToken } from '../utils/auth';
-import { GraphQLContext } from '../utils/auth';
+import { User } from '../models/index.ts';
+import { signToken } from '../utils/auth.ts';
+import { authMiddleware } from '../utils/auth.ts';
 
 export const resolvers = {
 	Query: {
-		me: async (_parent: unknown, _args: unknown, context: GraphQLContext) => {
+		me: async (_parent: unknown, _args: unknown, context: authMiddleware) => {
 			if (!context.user) throw new Error('You need to be logged in!');
 			return User.findById(context.user._id).select('username email').lean();
 		},
@@ -13,7 +13,7 @@ export const resolvers = {
 		authenticate: async (
 			_parent: unknown,
 			_args: unknown,
-			context: GraphQLContext
+			context: authMiddleware,
 		) => {
 			let user = await User.findOne({ _id: context.user?._id });
 			if (!user) {
@@ -27,35 +27,35 @@ export const resolvers = {
 				return { token, user };
 			}
 		},
-		// login: async (
-		// 	_parent: unknown,
-		// 	{ username, password }: { username: string; password: string }
-		// ) => {
-		// 	const user = await User.findOne({ username });
-		// 	if (!user) {
-		// 		throw new Error("Can't find this user");
-		// 	}
-		// 	let correctPw = false;
-		// 	try {
-		// 		correctPw = await user.isCorrectPassword(password);
-		// 	} catch (error) {
-		// 		correctPw = false;
-		// 	}
-		// 	if (!correctPw) {
-		// 		throw new Error('Wrong password!');
-		// 	}
-		// 	const token = signToken(user);
-		// 	return { token, user };
-		// },
-		// addUser: async (_parent: unknown, args: Record<string, unknown>) => {
-		// 	const user = await User.create(args);
-		// 	const token = signToken(user);
-		// 	return { token, user };
-		// },
+		login: async (
+			_parent: unknown,
+			{ username, password }: { username: string; password: string }
+		) => {
+			const user = await User.findOne({ username });
+			if (!user) {
+				throw new Error("Can't find this user");
+			}
+			let correctPw = false;
+			try {
+				correctPw = await user.isCorrectPassword(password);
+			} catch {
+				correctPw = false;
+			}
+			if (!correctPw) {
+				throw new Error('Wrong password!');
+			}
+			const token = signToken(user);
+			return { token, user };
+		},
+		addUser: async (_parent: unknown, args: Record<string, unknown>) => {
+			const user = await User.create(args);
+			const token = signToken(user);
+			return { token, user };
+		},
 		saveBook: async (
 			_parent: unknown,
 			{ input }: { input: Record<string, unknown> },
-			context: GraphQLContext
+			context: authMiddleware
 		) => {
 			if (!context.user) throw new Error('You need to be logged in!');
 			const updatedUser = await User.findOneAndUpdate(
@@ -68,7 +68,7 @@ export const resolvers = {
 		removeBook: async (
 			_parent: unknown,
 			{ bookId }: { bookId: string },
-			context: GraphQLContext
+			context: authMiddleware
 		) => {
 			if (!context.user) throw new Error('You need to be logged in!');
 			const updatedUser = await User.findOneAndUpdate(

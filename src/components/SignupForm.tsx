@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { TextField, Button, Alert, Stack } from '@mui/material';
 import { useMutation } from '@apollo/client';
-import { AUTHENTICATE } from '../graphql/mutations';
-import Auth from '../utils/auth';
+import { ADD_USER } from '../graphql/mutations'; // Make sure this mutation exists and is for signup
+import AuthService from '../utils/auth';
 
 export default function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
 	const [formData, setFormData] = useState({
@@ -10,7 +10,7 @@ export default function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
 		email: '',
 		password: '',
 	});
-	const [addUser, { error }] = useMutation(AUTHENTICATE);
+	const [addUser, { error }] = useMutation(ADD_USER);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -21,7 +21,7 @@ export default function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
 		e.preventDefault();
 		try {
 			const { data } = await addUser({ variables: { ...formData } });
-			Auth.login(data.addUser.token);
+			AuthService.login(data.addUser.token); // Adjust according to your mutation's return value
 			onSuccess?.();
 		} catch (err) {
 			console.error(err);

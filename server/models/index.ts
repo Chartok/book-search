@@ -1,2 +1,5 @@
-import User from './User';
+import User from './User.ts';
+import bookSchema from './Book.ts';
+
+export { bookSchema };
 export { User };
