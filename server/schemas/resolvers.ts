@@ -1,80 +1,87 @@
 import { User } from '../models/index.ts';
 import { signToken } from '../utils/auth.ts';
 import { authMiddleware } from '../utils/auth.ts';
+import type { Book } from '../models/Book.ts';
+
 
 export const resolvers = {
 	Query: {
 		me: async (_parent: unknown, _args: unknown, context: authMiddleware) => {
-			if (!context.user) throw new Error('You need to be logged in!');
-			return context.dataSources.user.findOneById(context.user._id).select('username email').lean();
+			if (!context.user) throw new Error('You need to be logged in');
+			const user = await User.findByPk(context.user._id);
+			if (!user) throw new Error('User not found');
+			return {
+				...user.toJSON(),
+				bookCount: (user.savedBooks || []).length,
+			};
 		},
 	},
 	Mutation: {
 		authenticate: async (
 			_parent: unknown,
-			_args: unknown,
+			{ email, username, password }: { email: string; username: string; password: string },
 			context: authMiddleware,
 		) => {
-			let user = await context.dataSources.user.findOneById(context.user?._id);
-			if (!user) {
-				user = await User.create({ email, username, password });
-			} else {
-				const ok = await bcrypt.compare(password, user.password);
-				if (!ok) {
-					throw new Error('Invalid password or username');
-				}
-				const token = signToken(user);
-				return { token, user };
+			let user = null;
+			if (context.user) {
+				user = await User.findByPk(context.user._id);
 			}
+			if (!user) {
+				user = await User.create({ email, username, password, savedBooks: [] });
+			} else {
+				const ok = await user.isCorrectPassword(password);
+				if (!ok) throw new Error('Incorrect password');
+			}
+		
+		const token = signToken({ _id: user.id, username: user.username, email: user.email });
+		return { token, user };
 		},
 		login: async (
 			_parent: unknown,
 			{ username, password }: { username: string; password: string }
 		) => {
-			const user = await User.findOne({ username });
-			if (!user) {
-				throw new Error("Can't find this user");
-			}
-			let correctPw = false;
-			try {
-				correctPw = await user.isCorrectPassword(password);
-			} catch {
-				correctPw = false;
-			}
-			if (!correctPw) {
-				throw new Error('Wrong password!');
-			}
-			const token = signToken(user);
+			const user = await User.findOne({ where: { username } });
+			if (!user) throw new Error('User not found');
+			const correctPw = await user.isCorrectPassword(password);
+			if (!correctPw) throw new Error('Incorrect password');
+			const token = signToken({ _id: user.id, username: user.username, email: user.email });
 			return { token, user };
 		},
-		addUser: async (_parent: unknown, args: Record<string, unknown>) => {
-			const user = await User.create(args);
-			const token = signToken(user);
-			return { token, user };
-		},
-		saveBook: async (
-			_parent,
-			{ input }, context: authMiddleware
+		addUser: async ( 
+			_parent: unknown,
+			args: { username: string; email: string; password: string }
 		) => {
-			if (!context.user) throw new Error('You need to be logged in!');
-			const updatedUser = await User.findOneAndUpdate(
-				context.user._id,
-				{ $addToSet: { savedBooks: input } },
-				{ new: true, runValidators: true }
-			);
-			return updatedUser;
+			const user = await User.create({ ...args, savedBooks: [] });
+			const token = sightToken({ _id: user.id, username: user.username, email: user.email });
+			return { token, user };
 		},
+		saveBook: async ( 
+			_parent: unknown,
+			{ input }: { input: Book },
+			context: authMiddleware,
+		) => {
+			if (!context.user) throw new Error('You need to be logged in to save a book');
+			const user = await User.findByPk(context.user._id);
+			if (!uer) throw new Error('User not found');
+			const books: Book[] = user.savedBooks || [];
+			if (!books.find((b) => b.bookId === InputDeviceInfo.bookId)) {
+				books.push(input);
+				await user.update({ savedBooks: books });
+			}
+			return user;
+			},
 		removeBook: async (
-			_parent,
-			{ bookId }, context: authMiddleware
+			_parent: unknown,
+			{ bookId }: { bookId: string },
+			context: authMiddleware,
 		) => {
-			if (!context.user) throw new Error('You need to be logged in!');
-			const updatedUser = await User.findOneAndUpdate(
-				context.user._id ,
-				{ $pull: { savedBooks: { bookId } } },
-				{ new: true }
-			);
-			return updatedUser;
+			if (!context.user) throw new Error('You need to be logged in to remove a book');
+			const user = await User.findByPk(context.user._id);
+			if (!user) throw new Error('User not found');
+			const books: Book[] = (user.savedBooks || []).filter((b) => b.bookId !== bookId);
+			await user.update({ savedBooks: books });
+			return user;
 		},
-	},
+		},
+			
 };

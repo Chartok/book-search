@@ -1,12 +1,8 @@
-import { Schema } from 'mongoose';
-
-const bookSchema = new Schema({
-	authors: [{ type: String }],
-	description: { type: String, required: true },
-	bookId: { type: String, required: true },
-	image: { type: String },
-	link: { type: String },
-	title: { type: String, required: true },
-});
-
-export default bookSchema;
+export interface Book {
+  bookId: string;
+  authors?: string[];
+  description: string;
+  image?: string;
+  link?: string;
+  title: string;
+}

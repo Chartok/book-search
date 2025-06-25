@@ -1,5 +1,5 @@
-import User from './User.ts';
-import bookSchema from './Book.ts';
+import { getSequelize } from "../config/connection.ts";
+import { createUserModel } from "./User.ts";
 
-export { bookSchema };
-export { User };
+export const User = createUserModel(getSequelize());
+
