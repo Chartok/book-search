@@ -1,15 +1,18 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 
-const secret = 'mysecretsshhhhh';
-const expiration = '2h';
+const secret = `${process.env.JWT_SECRET}`;
+const expiration = `${process.env.JWT_EXPIRATION}`;
 
 export function signToken({ username, email, _id }) {
 	const payload = { username, email, _id };
 	return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }
 
+interface GraphQLContext {
+	user: { _id: string; username: string; email: string } | null;
+}
+
 export const authMiddleware = ({ req }: { req: Request }) => {
-	//    let user = null;
 	let token = (req.headers.authorization || '').replace(/^Bearer\s+/, '');
 	if (token) {
 		token = token.trim();
@@ -24,3 +27,5 @@ export const authMiddleware = ({ req }: { req: Request }) => {
 
 	return { user: null };
 };
+
+export type GraphQLContext = ReturnType<typeof authMiddleware>;

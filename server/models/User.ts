@@ -3,9 +3,11 @@ import bcrypt from 'bcrypt';
 import bookSchema from './Book.ts';
 
 interface IUser {
+	_id: string;
 	username: string;
 	email: string;
 	password: string;
+	bookCount: number;
 	savedBooks: (typeof bookSchema)[];
 }
 

@@ -1,22 +1,21 @@
 import { User } from '../models';
 import { signToken } from '../utils/auth';
-import { AuthRequest } from '../utils/auth';
+import { GraphQLContext } from '../utils/serverauth';
 
 export const resolvers = {
 	Query: {
-		me: async (_parent: unknown, _args: unknown, context: AuthRequest) => {
-			if (context.user) {
-				return User.findById(context.user._id);
+		me: async (_parent: unknown, _args: unknown, context: GraphQLContext) => {
+			if (!context.user) throw new Error('You need to be logged in!'); 
+			return User.findById(context.user._id).select('username email').lean();
 			}
-			throw new Error('You need to be logged in!');
-		},
+				
 	},
 	Mutation: {
 		login: async (
-			_parent: unknown,
-			{ email, password }: { email: string; password: string }
+			_id: string,
+			{ username, password }: { username: string; password: string }
 		) => {
-			const user = await User.findOne({ email });
+			const user = await User.findOne({ username });
 			if (!user) {
 				throw new Error("Can't find this user");
 			}
