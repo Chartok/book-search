@@ -6,7 +6,7 @@ export const resolvers = {
 	Query: {
 		me: async (_parent: unknown, _args: unknown, context: authMiddleware) => {
 			if (!context.user) throw new Error('You need to be logged in!');
-			return User.findById(context.user._id).select('username email').lean();
+			return context.dataSources.user.findOneById(context.user._id).select('username email').lean();
 		},
 	},
 	Mutation: {
@@ -15,7 +15,7 @@ export const resolvers = {
 			_args: unknown,
 			context: authMiddleware,
 		) => {
-			let user = await User.findOne({ _id: context.user?._id });
+			let user = await context.dataSources.user.findOneById(context.user?._id);
 			if (!user) {
 				user = await User.create({ email, username, password });
 			} else {
@@ -53,26 +53,24 @@ export const resolvers = {
 			return { token, user };
 		},
 		saveBook: async (
-			_parent: unknown,
-			{ input }: { input: Record<string, unknown> },
-			context: authMiddleware
+			_parent,
+			{ input }, context: authMiddleware
 		) => {
 			if (!context.user) throw new Error('You need to be logged in!');
 			const updatedUser = await User.findOneAndUpdate(
-				{ _id: context.user._id },
+				context.user._id,
 				{ $addToSet: { savedBooks: input } },
 				{ new: true, runValidators: true }
 			);
 			return updatedUser;
 		},
 		removeBook: async (
-			_parent: unknown,
-			{ bookId }: { bookId: string },
-			context: authMiddleware
+			_parent,
+			{ bookId }, context: authMiddleware
 		) => {
 			if (!context.user) throw new Error('You need to be logged in!');
 			const updatedUser = await User.findOneAndUpdate(
-				{ _id: context.user._id },
+				context.user._id ,
 				{ $pull: { savedBooks: { bookId } } },
 				{ new: true }
 			);
