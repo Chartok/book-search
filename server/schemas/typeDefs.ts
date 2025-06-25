@@ -1,3 +1,6 @@
+import { gql } from 'graphql-tag';
+
+export const typeDefs = gql`
 	type Book {
 		bookId: String!
 		authors: [String]
@@ -34,11 +37,14 @@
 	}
 
 	type Mutation {
-		authenticate(email: String!, username: String!, password: String!): AuthPayload!
-		# login(email: String!, password: String!): Auth
-		# addUser(username: String!, email: String!, password: String!): Auth
+		authenticate(
+			email: String!
+			username: String!
+			password: String!
+		): AuthPayload!
+		login(username: String!, password: String!): AuthPayload
+		addUser(username: String!, email: String!, password: String!): AuthPayload
 		saveBook(input: BookInput!): User
 		removeBook(bookId: String!): User
 	}
 `;
-

@@ -1,4 +1,5 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import 'dotenv/config';
+import jwt from 'jsonwebtoken';
 
 const secret = `${process.env.JWT_SECRET}`;
 const expiration = `${process.env.JWT_EXPIRATION}`;

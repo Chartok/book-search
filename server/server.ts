@@ -1,8 +1,9 @@
+import 'dotenv/config';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { typeDefs, resolvers } from './schemas';
-import { connectToDatabase } from './config/connection';
-import { authMiddleware } from './utils/auth';
+import { typeDefs, resolvers } from './schemas/index.ts';
+import { connectToDatabase } from './config/connection.ts';
+import { authMiddleware } from './utils/auth.ts';
 
 const PORT = process.env.PORT;
 

@@ -1,4 +1,4 @@
-
+import 'dotenv/config'; // Ensure environment variables are loaded
 import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI || '';

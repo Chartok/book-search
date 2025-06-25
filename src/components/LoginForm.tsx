@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { TextField, Button, Alert, Stack } from '@mui/material';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../graphql/mutations';
-import Auth from '../utils/auth';
+import AuthService from '../utils/auth';
 
 export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
-	const [formData, setFormData] = useState({ email: '', password: '' });
+	const [formData, setFormData] = useState({ username: '', password: '' });
 	const [login, { error }] = useMutation(LOGIN_USER);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,7 +17,7 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 		e.preventDefault();
 		try {
 			const { data } = await login({ variables: { ...formData } });
-			Auth.login(data.login.token);
+			AuthService.login(data.login.token);
 			onSuccess?.();
 		} catch (err) {
 			console.error(err);
@@ -29,9 +29,9 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 			<Stack spacing={2}>
 				{error && <Alert severity='error'>Something went wrong!</Alert>}
 				<TextField
-					name='email'
-					label='Email'
-					value={formData.email}
+					name='username'
+					label='Username'
+					value={formData.username}
 					onChange={handleChange}
 					required
 				/>
@@ -46,7 +46,7 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 				<Button
 					type='submit'
 					variant='contained'
-					disabled={!(formData.email && formData.password)}
+					disabled={!(formData.username && formData.password)}
 				>
 					Submit
 				</Button>

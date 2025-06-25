@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
-import Auth from '../utils/auth';
+import AuthService from '../utils/auth';
 
 export default function Navbar() {
 	const [open, setOpen] = useState(false);
@@ -25,12 +25,12 @@ export default function Navbar() {
 					<Button color='inherit' component={RouterLink} to='/home'>
 						Search
 					</Button>
-					{Auth.loggedIn() ? (
+					{AuthService.loggedIn() ? (
 						<>
 							<Button color='inherit' component={RouterLink} to='/saved'>
 								Saved Books
 							</Button>
-							<Button color='inherit' onClick={() => Auth.logout()}>
+							<Button color='inherit' onClick={() => AuthService.logout()}>
 								Logout
 							</Button>
 						</>
