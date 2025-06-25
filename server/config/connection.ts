@@ -1,21 +1,21 @@
 import 'dotenv/config'; // Ensure environment variables are loaded
 import { Sequelize } from 'sequelize';
+import { authMiddleware } from '../utils/auth.ts';
 
-let sequelize: Sequelize | null = null;
+const sequelize: Sequelize | null = null;
 
 export async function connectToDatabase() {
 	if (!sequelize) {
 		const {
-			MYSQL_URI,
 			MYSQL_HOST,
 			MYSQL_USER,
 			MYSQL_PASSWORD,
 			MYSQL_DATABASE,
 		} = process.env;
-		if (MYSQL_URI) {
-			sequelize = new Sequelize(MYSQL_URI, { logging: false });
+		if (MYSQL_DATABASE) {
+			sequelize = new Sequelize(MYSQL_DATABASE, { logging: false });
 		} else {
-			if (!MYSQL_HOST || !MYSQL_USER || !MYSQL_DATABASE) {
+			if (!MYSQL_DATABASE) {
 				throw new Error('MySQL config not set in environment variables');
 			}
 			sequelize = new Sequelize(MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, {
@@ -25,7 +25,7 @@ export async function connectToDatabase() {
 			});
 		}
 	}
-	await sequelize.authenticate();
+	await sequelize.authenticate({ authMiddleware });
 	console.log('Database connection established successfully');
 	return sequelize;
 }
