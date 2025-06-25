@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import bookSchema from './Book.ts';
 
-interface IUser {
+export interface IUser {
 	_id: string;
 	username: string;
 	email: string;

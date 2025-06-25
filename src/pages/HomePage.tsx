@@ -28,7 +28,21 @@ export default function HomePage() {
 	const [searchInput, setSearchInput] = useState('');
 	const [savedBookIds, setSavedBookIds] = useState<string[]>(getSavedBookIds());
 
-	const [saveBook] = useMutation(SAVE_BOOK);
+	const [saveBook] = useMutation(SAVE_BOOK, {
+		update(cache, { data: { saveBook } }) {
+			cache.modify({
+				id: cache.identify({ __typename: 'User', _id: saveBook._id }),
+				fields: {
+					savedBooks(existing = []) {
+						return [...existing, ...saveBook.savedBooks];
+					},
+				},
+			});
+		},
+		onError(err) {
+			console.error(err);
+		},
+});
 
 	useEffect(() => {
 		return () => saveBookIds(savedBookIds);
