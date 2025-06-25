@@ -1,17 +1,18 @@
+import '../index.css';
 import { useState, useEffect } from 'react';
-import {
-	TextField,
-	Button,
-	Container,
-	Typography,
-	Card,
-	CardContent,
-} from '@mui/material';
+// import {
+// 	TextField,
+// 	Button,
+// 	Container,
+// 	Typography,
+// 	Card,
+// 	CardContent,
+// } from '@mui/material';
 import { useMutation } from '@apollo/client';
 import { SAVE_BOOK } from '../graphql/mutations';
 import { searchGoogleBooks } from '../utils/API';
 import { getSavedBookIds, saveBookIds } from '../utils/localStorage';
-import Auth from '../utils/auth';
+import AuthService from '../utils/auth';
 
 interface BookData {
 	bookId: string;
@@ -69,8 +70,8 @@ export default function HomePage() {
 	const handleSaveBook = async (bookId: string) => {
 		const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
 		if (!bookToSave) return;
-		const token = Auth.loggedIn() ? Auth.getToken() : null;
-		if (!token) return;
+		const token = AuthService.loggedIn() ? AuthService.getToken() : null;
+		if (!token) throw new Error('You need to be logged in to save a book.');
 		try {
 			await saveBook({ variables: { input: bookToSave } });
 			setSavedBookIds([...savedBookIds, bookToSave.bookId]);
@@ -80,43 +81,37 @@ export default function HomePage() {
 	};
 
 	return (
-		<Container sx={{ mt: 4 }}>
-			<Typography variant='h4' gutterBottom>
-				Search for Books
-			</Typography>
-			<form onSubmit={handleFormSubmit} style={{ marginBottom: '1rem' }}>
-				<TextField
-					value={searchInput}
-					onChange={(e) => setSearchInput(e.target.value)}
-					label='Search'
-				/>
-				<Button type='submit' variant='contained' sx={{ ml: 2 }}>
-					Search
-				</Button>
-			</form>
-			<div>
-				{searchedBooks.map((book) => (
-					<Card key={book.bookId} sx={{ mb: 2 }}>
-						<CardContent>
-							<Typography variant='h6'>{book.title}</Typography>
-							<Typography variant='body2'>
-								Authors: {book.authors.join(', ')}
-							</Typography>
-							<Typography variant='body2'>{book.description}</Typography>
-							{Auth.loggedIn() && (
-								<Button
-									variant='outlined'
-									sx={{ mt: 1 }}
-									disabled={savedBookIds.includes(book.bookId)}
-									onClick={() => handleSaveBook(book.bookId)}
-								>
-									{savedBookIds.includes(book.bookId) ? 'Saved' : 'Save Book'}
-								</Button>
-							)}
-						</CardContent>
-					</Card>
-				))}
-			</div>
-		</Container>
-	);
+                <div className='container mx-auto mt-4 px-4'>
+                        <h1 className='text-2xl font-bold mb-4'>Search for Books</h1>
+                        <form onSubmit={handleFormSubmit} className='mb-4 flex gap-2'>
+                                <input
+                                        value={searchInput}
+                                        onChange={(e) => setSearchInput(e.target.value)}
+                                        placeholder='Search'
+                                        className='flex-1 border rounded p-2'
+                                />
+                                <button type='submit' className='bg-blue-600 text-white px-4 py-2 rounded'>
+                                        Search
+                                </button>
+                        </form>
+                        <div className='space-y-4'>
+                                {searchedBooks.map((book) => (
+                                        <div key={book.bookId} className='border rounded p-4'>
+                                                <h2 className='text-lg font-semibold'>{book.title}</h2>
+                                                <p className='text-sm mb-2'>Authors: {book.authors.join(', ')}</p>
+                                                <p className='text-sm'>{book.description}</p>
+                                                {AuthService.loggedIn() && (
+                                                        <button
+                                                                className='mt-2 border px-3 py-1 rounded'
+                                                                disabled={savedBookIds.includes(book.bookId)}
+                                                                onClick={() => handleSaveBook(book.bookId)}
+                                                        >
+                                                                {savedBookIds.includes(book.bookId) ? 'Saved' : 'Save Book'}
+                                                        </button>
+                                                )}
+                                        </div>
+                                ))}
+                        </div>
+                </div>
+        )
 }

@@ -1,13 +1,14 @@
+import '../index.css';
 import { useMutation, useQuery } from '@apollo/client';
 import { REMOVE_BOOK } from '../graphql/mutations';
 import { GET_ME } from '../graphql/queries';
-import {
-	Button,
-	Card,
-	CardContent,
-	Container,
-	Typography,
-} from '@mui/material';
+// import {
+// 	Button,
+// 	Card,
+// 	CardContent,
+// 	Container,
+// 	Typography,
+// } from '@mui/material';
 import { removeBookId } from '../utils/localStorage';
 
 interface Book {
@@ -35,32 +36,25 @@ export default function SavedBooks() {
 	const userData = data?.me || { savedBooks: [] };
 
 	return (
-		<Container sx={{ mt: 4 }}>
-			<Typography variant='h4' gutterBottom>
-				Viewing saved books!
-			</Typography>
+		<div className='container mx-auto mt-4 px-4'>
+			<h1 className='text-2xl font-bold mb-4'>Viewing saved books!</h1>
 			{userData.savedBooks.length ? (
 				userData.savedBooks.map((book: Book) => (
-					<Card key={book.bookId} sx={{ mb: 2 }}>
-						<CardContent>
-							<Typography variant='h6'>{book.title}</Typography>
-							<Typography variant='body2'>
-								Authors: {book.authors.join(', ')}
-							</Typography>
-							<Typography variant='body2'>{book.description}</Typography>
-							<Button
-								variant='outlined'
-								sx={{ mt: 1 }}
-								onClick={() => handleDeleteBook(book.bookId)}
-							>
-								Delete this Book
-							</Button>
-						</CardContent>
-					</Card>
+					<div key={book.bookId} className='border rounded p-4 mb-4'>
+						<h2 className='text-lg font-semibold'>{book.title}</h2>
+						<p className='text-sm mb-2'>Authors: {book.authors.join(', ')}</p>
+						<p className='text-sm'>{book.description}</p>
+						<button
+							className='mt-2 border px-3 py-1 rounded'
+							onClick={() => handleDeleteBook(book.bookId)}
+						>
+							Delete this Book
+						</button>
+					</div>
 				))
 			) : (
-				<Typography>You have no saved books!</Typography>
+				<p>You have no saved books!</p>
 			)}
-		</Container>
+		</div>
 	);
 }

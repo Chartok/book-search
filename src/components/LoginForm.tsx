@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { TextField, Button, Alert, Stack } from '@mui/material';
 import { useMutation } from '@apollo/client';
 import { LOGIN_USER } from '../graphql/mutations';
 import AuthService from '../utils/auth';
@@ -24,33 +23,33 @@ export default function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
 		}
 	};
 
-	return (
-		<form onSubmit={handleSubmit}>
-			<Stack spacing={2}>
-				{error && <Alert severity='error'>Something went wrong!</Alert>}
-				<TextField
-					name='username'
-					label='Username'
-					value={formData.username}
-					onChange={handleChange}
-					required
-				/>
-				<TextField
-					name='password'
-					label='Password'
-					type='password'
-					value={formData.password}
-					onChange={handleChange}
-					required
-				/>
-				<Button
-					type='submit'
-					variant='contained'
-					disabled={!(formData.username && formData.password)}
-				>
-					Submit
-				</Button>
-			</Stack>
-		</form>
-	);
+	 return (
+                <form onSubmit={handleSubmit} className='space-y-4'>
+                        {error && <p className='text-red-600'>Something went wrong!</p>}
+                        <input
+                                name='username'
+                                placeholder='Username'
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                                className='w-full border rounded p-2'
+                        />
+                        <input
+                                name='password'
+                                type='password'
+                                placeholder='Password'
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                className='w-full border rounded p-2'
+                        />
+                        <button
+                                type='submit'
+                                className='w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50'
+                                disabled={!(formData.username && formData.password)}
+                        >
+                                Submit
+                        </button>
+                </form>
+        );
 }
