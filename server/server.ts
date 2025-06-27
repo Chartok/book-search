@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { typeDefs, resolvers } from './schemas/index.ts';
-import { connectToDatabase } from './config/connection.ts';
+import { connectToDB } from './config/connection.ts';
 import { authMiddleware } from './utils/auth.ts';
 
 const PORT = process.env.PORT;
@@ -10,7 +10,7 @@ const PORT = process.env.PORT;
 const server = new ApolloServer({ typeDefs, resolvers });
 
 try {
-	await connectToDatabase();
+	await connectToDB();
 	console.log('Connected to MySQL database successfully');
 } catch (error) {
 	console.error('Error connecting to MySQL database:', error);

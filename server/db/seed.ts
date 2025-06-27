@@ -1,9 +1,9 @@
 import 'dotenv/config';
-import { connectToDatabase } from '../config/connection.ts';
+import { connectToDB } from '../config/connection.ts';
 import { User } from '../models/index.ts';
 
 (async () => {
-  const db = await connectToDatabase();
+  const db = await connectToDB();
   // Only force sync in non-production environments
   try {
     await db.sync({ force: false }); // Reset the database only if not in production
