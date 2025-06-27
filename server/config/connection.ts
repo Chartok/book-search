@@ -1,36 +1,63 @@
-import 'dotenv/config'; // Ensure environment variables are loaded
+import 'dotenv/config'; 
 import { Sequelize } from 'sequelize';
 
-let sequelize: Sequelize | null = null;
+const sequelize = new Sequelize(
+	process.env.MYSQL_DATABASE || 'database',
+	process.env.MYSQL_USER || 'username',
+	process.env.MYSQL_PASSWORD || 'password',
+	{
+		host: process.env.MYSQL_HOST,
+		dialect: 'mysql',
+		logging: false,
 
-export async function connectToDatabase() {
-	if (!sequelize) {
-		const {
-			MYSQL_URI,
-			MYSQL_HOST,
-			MYSQL_USER,
-			MYSQL_PASSWORD,
-			MYSQL_DATABASE,
-		} = process.env;
-		if (MYSQL_URI) {
-			sequelize = new Sequelize(MYSQL_URI, { logging: false });
-		} else {
-			if (!MYSQL_HOST || !MYSQL_USER || !MYSQL_DATABASE) {
-				throw new Error('MySQL config not set in environment variables');
-			}
-			sequelize = new Sequelize(MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, {
-				host: MYSQL_HOST,
-				dialect: 'mysql',
-				logging: false,
-			});
-		}
+		omitNull: true,
+		native: true,
+		ssl: true,
+
+		define: {
+			underscored: false,
+			freezeTableName: false,
+			charset: 'utf8',
+			dialectOptions: {
+				collate: 'utf8_general_ci',
+			},
+			timestamps: true,
+		},
+
+		// pool configuration used to pool database connections
+		pool: {
+			max: 5,
+			idle: 30000,
+			acquire: 60000,
+		},
 	}
-	await sequelize.authenticate();
-	console.log('Database connection established successfully');
-	return sequelize;
+);
+
+async function connectToDB() {
+	try {
+		await sequelize.authenticate();
+		console.log('Database connection established successfully');
+	} catch (error) {
+		console.error('Error connecting to the database:', error);
+		return error;
+	}
 }
 
-export function getSequelize() {
-	if (!sequelize) throw new Error('Database not connected/initialized');
-	return sequelize;
+async function disconnectFromDB() {
+	try {
+		await sequelize.close();
+		console.log('Database connection closed successfully');
+	} catch (error) {
+		console.error('Error closing database connection:', error);
+		return error;
+	}
 }
+
+process.on('SIGINT', async () => {
+	await disconnectFromDB();
+	process.exit(0);
+});
+
+export { sequelize, connectToDB, disconnectFromDB };
+
+

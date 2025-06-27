@@ -9,6 +9,14 @@ export const typeDefs = gql`
 		image: String
 		link: String
 	}
+	
+	type usersBooks {
+		_id: ID!!
+		bookCount: Int!
+		[savedBooks]: [Book!]!
+		username: String!
+		email: String!
+	}
 
 	input BookInput {
 		bookId: String!
@@ -46,5 +54,7 @@ export const typeDefs = gql`
 		addUser(username: String!, email: String!, password: String!): AuthPayload
 		saveBook(input: BookInput!): User
 		removeBook(bookId: String!): User
+		usersBooks()
+		
 	}
 `;

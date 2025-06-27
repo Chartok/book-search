@@ -45,7 +45,7 @@ export default function HomePage() {
 });
 
 	useEffect(() => {
-		return () => saveBookIds(savedBookIds);
+		saveBookIds(savedBookIds);
 	}, [savedBookIds]);
 
 	const handleFormSubmit = async (e: React.FormEvent) => {

@@ -9,12 +9,12 @@ export function signToken({ username, email, _id }) {
 	return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }
 
-export const authMiddleware = ({ req }: { req: Request }) => {
+export const authMiddleware = ({ req }: { req: jwt }) => {
 	let token = (req.headers.authorization || '').replace(/^Bearer\s+/, '');
 	if (token) {
 		token = token.trim();
 		try {
-			const { data } = jwt.verify(token, secret) as { data: JwtPayload };
+			const { data } = jwt.verify(token, secret) as { data: jwt };
             console.log('token verified');
 			return { user: data };
 		} catch {
