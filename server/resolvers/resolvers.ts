@@ -1,7 +1,7 @@
 import { User } from '../models/User.ts';
 import { Book } from '../models/Book.ts';
 import { SavedBook } from '../models/SavedBook.ts';
-import { UserBook } from '../models/UserBook.ts';
+import { UserBooks } from '../models/UserBook.ts';
 import { authMiddleware, signToken } from '../utils/auth.ts';
 
 export const resolvers = {
@@ -20,16 +20,16 @@ export const resolvers = {
 		},
 
 		User: {
-			nextBook: (user: UserBook) =>
+			nextBook: (user: UserBooks) =>
 				user.getBooks({ through: { where: { status: 'NEXT' } } }),
-			finishedBook: (user: UserBook) =>
+			finishedBook: (user: UserBooks) =>
 				user.getBooks({ through: { where: { status: 'FINISHED' } } }),
 		},
 	},
 
 	Mutation: {
 		login: async (
-			user: User,
+			_parent: unknown,
 			{ username, password }: { username: string; password: string }
 		) => {
 			const user = await User.findOne({ where: { username } });
@@ -46,7 +46,7 @@ export const resolvers = {
 		},
 
 		register: async (
-			user: User,
+			_parent: unknown,
 			args: { username: string; email: string; password: string }
 		) => {
 			const user = await User.create({ ...args, savedBooks: [] });

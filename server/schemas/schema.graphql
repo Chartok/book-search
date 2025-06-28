@@ -4,6 +4,7 @@ enum BookStatus {
 }
 
 type Query {
+	User(id: ID!): User
 	me: User
 	books: [Book!]!
 }
@@ -11,13 +12,13 @@ type Query {
 type Mutation {
 	login(username: String!, password: String!): AuthPayload
 	register(username: String!, email: String!, password: String!): AuthPayload
-	removeBook(bookId: Number!): User
-	savebook(bookId: Number!): SavedBook!
-	updateBookStatus(bookId: Number!, status: BookStatus!): SavedBook!
+	removeBook(bookId: Int!): User!
+	saveBook(bookId: Int!): User!
+	updateBookStatus(bookId: Int!, status: BookStatus!): User!
 }
 
 type Book {
-	bookId: Number!
+	bookId: Int!
 	authors: [String]
 	description: String!
 	title: String!
@@ -29,7 +30,7 @@ type Book {
 
 type SavedBook {
   id: ID!
-  bookId: Number!        # or a full Book type if you resolve it via a datasource
+  bookId: Int!        # or a full Book type if you resolve it via a datasource
   status: BookStatus!
   createdAt: String!
   updatedAt: String!

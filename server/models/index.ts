@@ -1,7 +1,24 @@
 import 'dotenv/config';
-import { Sequelize } from 'sequelize';
+import Sequelize from 'sequelize';
 
-export const sequelize = new Sequelize(process.env.DB_URI, {
+const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
+
+// 1️⃣ Connect to the server’s default DB
+const admin = new Sequelize('mysql', DB_USER!, DB_PASSWORD!, {
+  host: DB_HOST,
+  port: Number(DB_PORT),
+  dialect: 'mysql',
+});
+
+await admin.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;`);
+await admin.close();
+
+export const sequelize = new Sequelize({
+	host: DB_HOST,
+	port: DB_PORT,
+	database: DB_NAME,
+	username: DB_USER,
+	password: DB_PASSWORD,
 	dialect: 'mysql',
 	logging: console.log,
 
