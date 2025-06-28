@@ -1,26 +1,29 @@
 import 'dotenv/config';
-import { connectToDB } from '../config/connection.ts';
-import { User } from '../models/index.ts';
+import { sequelize } from '../models/index.ts';
+import { Book }      from '../models/Book.ts';
+import { User }      from '../models/User.ts';
 
-(async () => {
-  const db = await connectToDB();
-  // Only force sync in non-production environments
+async function seed() {
   try {
-    await db.sync({ force: false }); // Reset the database only if not in production
-    console.log('Database synchronized successfully');
+    await sequelize.sync({ force: true });
+    console.log('✅ database synced');
+
     await User.bulkCreate([
-      { username: 'foo', email: 'foobar@example.com', password: 'foo123'},
-      { username: 'bar', email: 'barfoo@example.com', password: 'bar123'},
-    ], { individualHooks: true });
+      { username: 'alice' },
+      { username: 'bob' },
+    ]);
 
-    console.log('Database seeded successfully');
+    await Book.bulkCreate([
+      { title: 'The Hobbit', author: 'J.R.R. Tolkien' },
+      { title: '1984',       author: 'George Orwell' },
+    ]);
+
+    console.log('✅ seeding complete');
+  } catch (err) {
+    console.error('Failed to seed database:', err);
   } finally {
-    // Ensure all pending operations are completed before closing the connection
-    await db.close();
+    await sequelize.close();
   }
-})();
+}
 
-seed().catch((error) => {
-  console.error('Failed to seed database:', error);
-  process.exit(1);
-});
+seed();

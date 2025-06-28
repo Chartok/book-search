@@ -1,25 +1,38 @@
 import 'dotenv/config';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { typeDefs, resolvers } from './schemas/index.ts';
-import { connectToDB } from './config/connection.ts';
+import { readFileSync } from "fs";
+import path from "path";
+import { gql } from "graphql-tag";
+import { resolvers } from './resolvers/resolvers.ts';
+import { sequelize } from './models/index.ts';
 import { authMiddleware } from './utils/auth.ts';
 
-const PORT = process.env.PORT;
+const typeDefs = gql(
+	readFileSync(path.resolve(__dirname, './schemas/schema.graphql'), {
+	encoding: 'utf-8',
+	})
+);
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const PORT = process.env.PORT || 4001;
 
-try {
-	await connectToDB();
-	console.log('Connected to MySQL database successfully');
-} catch (error) {
-	console.error('Error connecting to MySQL database:', error);
-	process.exit(1);
+
+async function startServer() {
+	try {
+		await sequelize();
+		console.log('Connected to MySQL database successfully');
+	} catch (error) {
+		console.error('Error connecting to MySQL database:', error);
+		process.exit(1);
+	}
+	
+	const server = new ApolloServer({ typeDefs, resolvers });
+	const { url } = await startStandaloneServer(server, {
+		context:  ({ req }) => authMiddleware({ req }),  
+		listen: { port: PORT },
+	});
+
+	console.log(`Apollo/Server ready @${url}`);
 }
 
-const { url } = await startStandaloneServer(server, {
-	context:  ({ req }) => authMiddleware({ req }),  
-	listen: { port: PORT },
-});
-
-console.log(`Apollo/Server ready @${url}`);
+startServer();

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { ADD_USER } from '../graphql/mutations'; // Make sure this mutation exists and is for signup
+import { REGISTER } from '../graphql/mutations'; // Make sure this mutation exists and is for signup
 import AuthService from '../utils/auth';
 
 export default function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
@@ -9,7 +9,7 @@ export default function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
 		email: '',
 		password: '',
 	});
-	const [addUser, { error }] = useMutation(ADD_USER);
+	const [register, { error }] = useMutation(REGISTER);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -19,8 +19,8 @@ export default function SignupForm({ onSuccess }: { onSuccess?: () => void }) {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		try {
-			const { data } = await addUser({ variables: { ...formData } });
-			AuthService.login(data.addUser.token); // Adjust according to your mutation's return value
+			const { data } = await register({ variables: { ...formData } });
+			AuthService.login(data.register.token); // Adjust according to your mutation's return value
 			onSuccess?.();
 		} catch (err) {
 			console.error(err);

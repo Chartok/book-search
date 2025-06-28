@@ -1,0 +1,59 @@
+enum BookStatus {
+	NEXT
+	FINISHED
+}
+
+type Query {
+	me: User
+	books: [Book!]!
+}
+
+type Mutation {
+	login(username: String!, password: String!): AuthPayload
+	register(username: String!, email: String!, password: String!): AuthPayload
+	removeBook(bookId: Number!): User
+	savebook(bookId: Number!): SavedBook!
+	updateBookStatus(bookId: Number!, status: BookStatus!): SavedBook!
+}
+
+type Book {
+	bookId: Number!
+	authors: [String]
+	description: String!
+	title: String!
+	image: String
+	link: String
+	nextBook: Boolean
+	finishedBook: Boolean
+}
+
+type SavedBook {
+  id: ID!
+  bookId: Number!        # or a full Book type if you resolve it via a datasource
+  status: BookStatus!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type User {
+	_id: ID!
+	username: String!
+	email: String!
+	bookCount: Int!
+	savedBooks: [SavedBook!]!
+}
+
+type AuthPayload {
+	token: ID!
+	user: User
+}
+
+# input BookInput {
+# 	bookId: String!
+# 	authors: [String]
+# 	description: String!
+# 	title: String!
+# 	image: String
+# 	link: String
+# }
+

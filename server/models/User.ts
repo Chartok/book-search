@@ -1,51 +1,74 @@
-import { DataTypes, Model, Sequelize,  InferAttributes, InferCreationAttributes } from 'sequelize';
+import { DataTypes } from 'sequelize';
+import { sequelize } from './index.ts'
 import bcrypt from 'bcrypt';
-import type { Book } from './Book.ts';
+import { Book } from './Book.ts';
 
-const sequelize = new Sequelize(
-
-class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-	public id!: number;
-	public username!: string;
-	public email!: string;
-	public password!: string;
-	public bookCount!: number;
-	public savedBooks!: Book[];
-
-	public async isCorrectPassword(password: string): Promise<boolean> {
-		return bcrypt.compare(password, this.password);
-	}
-}
-
-export function createUserModel(sequelize: Sequelize) {
-	User.init({
-		id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
-		username: { type: DataTypes.STRING, allowNull: false, unique: true },
-		email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } },
-		password: { type: DataTypes.STRING, allowNull: false },
-		bookCount: { type: DataTypes.INTEGER, defaultValue: 0 },
-		savedBooks: {
-			type: DataTypes.ARRAY(DataTypes.JSONB),
-			defaultValue: [],
-			get() {
-				const value = this.getDataValue('savedBooks');
-				return value ? value : [];
-			},
+export const User = sequelize.define('User', {
+	_id: {
+		type: DataTypes.INTEGER,
+		primaryKey: true,
+		autoIncrement: true,
+	},
+	username: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true,
+	},
+	email: {
+		type: DataTypes.STRING,
+		allowNull: false,
+		unique: true,
+		validate: {
+			isEmail: true,
 		},
-	}, {
-		sequelize,
-		modelName: 'User',
-		timestamps: true,
-	});
-	User.addHook('beforeCreate', async (user: User) => {
-		const saltRounds = 10;
-		user.password = await bcrypt.hash(user.password, saltRounds);
-	});
-	return User;
-}
-		
-	User.prototype.isCorrectPassword = async function(password: string) {
-		return bcrypt.compare(password, this.password);
-	};
-	return User;
+	},
+	password: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	bookCount: {
+		type: DataTypes.INTEGER,
+		defaultValue: 0,
+	},
+	savedBooks: {
+		type: DataTypes.JSON, // Assuming savedBooks is an array of Book objects
+		defaultValue: [],
+	},
+}, {
+	sequelize,
+	timestamps: false, // Disable createdAt and updatedAt fields
+	hooks: {
 
+		beforeCreate: async (user: User) => {
+			user.password = await bcrypt.hash(user.password, 10);
+		},
+
+		beforeUpdate: async (user: User) => {
+			if (user.changed('password')) {
+				user.password = await bcrypt.hash(user.password, 10);
+			}
+		}
+	},
+	instanceMethods: {
+		async isCorrectPassword(password: string): Promise<boolean> {
+		return bcrypt.compare(password, this.password);
+		}
+	},
+
+});
+
+// Associations
+
+User.hasMany(Book, {
+	foreignKey: 'userId',
+	as: 'books',
+});
+
+Book.belongsTo(User, {
+	foreignKey: 'userId',
+	as: 'user',
+});
+
+export default User;
+
+// This file defines the User model for a Sequelize ORM setup, including password hashing and associations with a Book model.

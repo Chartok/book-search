@@ -1,25 +1,55 @@
-import { createUserModel } from './User';
-import { createBookModel } from './Book';
-import sequelize from '../config/connection';
-import { connectToDB } from '../config/connection';
+import 'dotenv/config';
+import { Sequelize } from 'sequelize';
 
-// Connect to the database
-(async () => {
-  const db = await connectToDB();
-  // Only force sync in non-production environments
-  try {
-    await db.sync({ force: true }); // Reset the database only if not in production
-    console.log('Database synchronized successfully');
-  } catch (error) {
-    console.error('Error synchronizing the database:', error);
-  } finally {
-    // Ensure all pending operations are completed before closing the connection
-    await db.close();
-  }
-})().catch((error) => {
-  console.error('Failed to connect to the database:', error);
-  process.exit(1);
-})();
+export const sequelize = new Sequelize(process.env.DB_URI, {
+	dialect: 'mysql',
+	logging: console.log,
 
-export const User = createUserModel(sequelize);
-export const Book = createBookModel(sequelize);
+	omitNull: true,
+	native: true,
+	ssl: true,
+
+	define: {
+		underscored: false,
+		freezeTableName: false,
+		charset: 'utf8',
+		dialectOptions: {
+			collate: 'utf8_general_ci',
+		},
+		timestamps: false,
+	},
+
+	// pool configuration used to pool database connections
+	pool: {
+		max: 5,
+		idle: 30000,
+		acquire: 60000,
+	},
+});
+
+export async function connectToDB() {
+	try {
+		await sequelize.authenticate();
+		console.log('Database connection established successfully');
+	} catch (error) {
+		console.error('Error connecting to the database:', error);
+		return error;
+	}
+}
+
+export async function disconnectFromDB() {
+	try {
+		await sequelize.close();
+		console.log('Database connection closed successfully');
+	} catch (error) {
+		console.error('Error closing database connection:', error);
+		return error;
+	}
+}
+
+process.on('SIGINT', async () => {
+	await disconnectFromDB();
+	process.exit(0);
+});
+
+export default { sequelize, connectToDB, disconnectFromDB };
