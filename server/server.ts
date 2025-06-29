@@ -9,7 +9,7 @@ import { connectToDB } from './models/index.ts';
 import { authMiddleware } from './utils/auth.ts';
 
 const typeDefs = gql(
-	readFileSync(path.resolve(import.meta.dirname, './schemas/schema.graphql'), {
+	readFileSync(path.resolve(import.meta.dirname, '../apollo/schema.graphql'), {
 	encoding: 'utf-8',
 	})
 );
