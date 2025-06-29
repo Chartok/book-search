@@ -52,6 +52,7 @@
 		"sequelize-cli": "^6.6.3"
 	},
 	"devDependencies": {
+		"@azure/static-web-apps-cli": "^2.0.6",
 		"@eslint/js": "^9.25.0",
 		"@graphql-codegen/cli": "^5.0.7",
 		"@graphql-codegen/typescript": "^4.1.6",
