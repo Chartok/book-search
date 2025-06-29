@@ -13,7 +13,8 @@
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"test": "node --import ts-node/esm --test --test-concurrency 4 \"tests/**/*.test.ts\""
+		"test": "node --import ts-node/esm --test --test-concurrency 4 \"tests/**/*.test.ts\"",
+		"generate": "graphql-codegen"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.13.8",
@@ -45,6 +46,9 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.25.0",
+		"@graphql-codegen/cli": "^5.0.7",
+		"@graphql-codegen/typescript": "^4.1.6",
+		"@graphql-codegen/typescript-resolvers": "^4.5.1",
 		"@tailwindcss/cli": "^4.1.10",
 		"@tailwindcss/vite": "^4.1.10",
 		"@types/node": "^24.0.3",
