@@ -8,13 +8,17 @@
 		"start": "npm run compile && node ./dist/index.js",
 		"dev:api": "nodemon --exec ts-node ./server/server.ts",
 		"dev:web": "vite",
-		"seed": "ts-node ./server/db/seed.ts",
-		"dev": "npm run seed && concurrently -k -n API,WEB \"npm:dev:api\" \"npm:dev:web\"",
+		"dev": "concurrently -k -n API,WEB \"npm:dev:api\" \"npm:dev:web\"",
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
 		"test": "node --import ts-node/esm --test --test-concurrency 4 \"tests/**/*.test.ts\"",
-		"generate": "graphql-codegen"
+		"generate": "graphql-codegen",
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed:all",
+    "db:migrate:undo": "npx sequelize-cli db:migrate:undo",
+    "db:refresh": "npm run db:migrate && npm run db:seed",
+    "db:seed:undo": "npx sequelize-cli db:seed:undo:all"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.13.8",
@@ -42,7 +46,8 @@
 		"react": "^19.1.0",
 		"react-dom": "^19.1.0",
 		"react-router-dom": "^7.6.2",
-		"sequelize": "^6.37.7"
+		"sequelize": "^6.37.7",
+		"sequelize-cli": "^6.6.3"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.25.0",

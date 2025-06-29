@@ -1,0 +1,8 @@
+{
+  "client": {
+    "service": {
+      "name": "book-search",
+      "url": "http://localhost:4000/graphql"
+    }
+  }
+}

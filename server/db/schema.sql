@@ -1,6 +1,6 @@
 -- -- Create database
--- CREATE DATABASE IF NOT EXISTS book_search;
--- USE book_search;
+-- CREATE DATABASE IF NOT EXISTS book-search;
+-- USE book-search;
 
 -- -- Table to store users
 -- CREATE TABLE IF NOT EXISTS users (
