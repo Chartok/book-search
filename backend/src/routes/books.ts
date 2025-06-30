@@ -1,29 +1,94 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { Book } from '../models/Book';
 import { SavedBook } from '../models/SavedBook';
 import { authMiddleware } from '../middleware/auth';
+import '../types/index'; // Import type declarations
 
 const router = Router();
 
-router.get('/', async (_, res) => {
-	const books = await Book.findAll();
-	res.json(books);
+// Public route - get all books
+router.get('/', async (_req: Request, res: Response): Promise<void> => {
+	try {
+		const books = await Book.findAll();
+		res.json(books);
+	} catch (error) {
+		res.status(500).json({ error: 'Failed to fetch books' });
+	}
 });
 
-router.post('/:id/save', authMiddleware, async (req, res) => {
-	const saved = await SavedBook.create({
-		userId: req.user.id,
-		bookId: Number(req.params.id),
-		status: req.body.status,
-	});
-	res.json(saved);
-});
+// Protected route - save a book for user
+router.post(
+	'/:id/save',
+	authMiddleware,
+	async (req: Request, res: Response): Promise<void> => {
+		try {
+			if (!req.user) {
+				res.status(401).json({ error: 'User not authenticated' });
+				return;
+			}
 
-router.delete('/:id/remove', authMiddleware, async (req, res) => {
-	await SavedBook.destroy({
-		where: { userId: req.user.id, bookId: Number(req.params.id) },
-	});
-	res.json({ message: 'Removed' });
-});
+			const saved = await SavedBook.create({
+				userId: req.user.id,
+				bookId: Number(req.params.id),
+				status: req.body.status || 'want-to-read',
+			});
+			res.json(saved);
+		} catch (error) {
+			res.status(500).json({ error: 'Failed to save book' });
+		}
+	}
+);
+
+// Protected route - remove a saved book
+router.delete(
+	'/:id/remove',
+	authMiddleware,
+	async (req: Request, res: Response): Promise<void> => {
+		try {
+			if (!req.user) {
+				res.status(401).json({ error: 'User not authenticated' });
+				return;
+			}
+
+			const deleted = await SavedBook.destroy({
+				where: {
+					userId: req.user.id,
+					bookId: Number(req.params.id),
+				},
+			});
+
+			if (deleted === 0) {
+				res.status(404).json({ error: 'Saved book not found' });
+				return;
+			}
+
+			res.json({ message: 'Book removed from saved list' });
+		} catch (error) {
+			res.status(500).json({ error: 'Failed to remove book' });
+		}
+	}
+);
+
+// Protected route - get user's saved books
+router.get(
+	'/saved',
+	authMiddleware,
+	async (req: Request, res: Response): Promise<void> => {
+		try {
+			if (!req.user) {
+				res.status(401).json({ error: 'User not authenticated' });
+				return;
+			}
+
+			const savedBooks = await SavedBook.findAll({
+				where: { userId: req.user.id },
+				include: [Book],
+			});
+			res.json(savedBooks);
+		} catch (error) {
+			res.status(500).json({ error: 'Failed to fetch saved books' });
+		}
+	}
+);
 
 export default router;
