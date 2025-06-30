@@ -20,7 +20,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 		}
 
 		const user = await User.create(req.body);
-		const payload: JwtPayload = { id: user.id };
+		const payload: JwtPayload = { id: user._id };
 		const token = jwt.sign(payload, process.env.JWT_SECRET!, {
 			expiresIn: '24h',
 		});
@@ -28,7 +28,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 		res.status(201).json({
 			token,
 			user: {
-				id: user.id,
+				id: user._id,
 				email: user.email,
 				username: user.username,
 			},
@@ -60,7 +60,14 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		const payload: JwtPayload = { id: user.id };
+		 // Check if JWT_SECRET is defined
+    if (!process.env.JWT_SECRET) {
+      console.error('JWT_SECRET is not defined');
+      res.status(500).json({ error: 'Server configuration error' });
+      return;
+    }
+
+		const payload: JwtPayload = { id: user._id };
 		const token = jwt.sign(payload, process.env.JWT_SECRET!, {
 			expiresIn: '24h',
 		});
@@ -68,12 +75,13 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 		res.json({
 			token,
 			user: {
-				id: user.id,
+				id: user._id,
 				email: user.email,
 				username: user.username,
 			},
 		});
 	} catch (err) {
+		console.error('Login error:', err);
 		res.status(500).json({ error: 'Login failed' });
 	}
 });
@@ -89,7 +97,7 @@ router.get(
 		}
 
 		res.json({
-			id: req.user.id,
+			id: req.user._id,
 			email: req.user.email,
 			username: req.user.username,
 		});

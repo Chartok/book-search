@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Book } from '../models/Book';
-import { SavedBook } from '../models/SavedBook';
+import { UserSavedBook } from '../models/SavedBook';
 import { authMiddleware } from '../middleware/auth';
 import '../types/index'; // Import type declarations
 
@@ -27,10 +27,9 @@ router.post(
 				return;
 			}
 
-			const saved = await SavedBook.create({
-				userId: req.user.id,
-				bookId: Number(req.params.id),
-				status: req.body.status || 'want-to-read',
+			const saved = await UserSavedBook.create({
+				user_id: req.user._id,
+				book_id: Number(req.params.id),
 			});
 			res.json(saved);
 		} catch (error) {
@@ -50,10 +49,10 @@ router.delete(
 				return;
 			}
 
-			const deleted = await SavedBook.destroy({
+			const deleted = await UserSavedBook.destroy({
 				where: {
-					userId: req.user.id,
-					bookId: Number(req.params.id),
+					user_id: req.user._id,
+					book_id: Number(req.params.id),
 				},
 			});
 
@@ -80,8 +79,8 @@ router.get(
 				return;
 			}
 
-			const savedBooks = await SavedBook.findAll({
-				where: { userId: req.user.id },
+			const savedBooks = await UserSavedBook.findAll({
+				where: { user_id: req.user._id },
 				include: [Book],
 			});
 			res.json(savedBooks);

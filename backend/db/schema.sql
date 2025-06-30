@@ -1,0 +1,44 @@
+-- Create database
+CREATE DATABASE IF NOT EXISTS book_search;
+USE book_search;
+
+-- Table to store users
+CREATE TABLE IF NOT EXISTS users (
+    _id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    book_count INT DEFAULT 0,
+    saved_books JSON DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Table to store book metadata
+CREATE TABLE IF NOT EXISTS books (
+    bookId INT AUTO_INCREMENT PRIMARY KEY,
+    authors JSON NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    image VARCHAR(255) NOT NULL,
+    link VARCHAR(255) NOT NULL,
+    nextBook TINYINT(1) DEFAULT NULL,
+    finishedBook TINYINT(1) DEFAULT NULL,
+    userId INT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Join table to track which books a user has saved
+-- This is a many-to-many join table between users and books,
+-- allowing each user to save multiple books and each book to be saved by multiple users.
+CREATE TABLE IF NOT EXISTS user_saved_books (
+    user_saved_book_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    book_id INT NOT NULL,
+    UNIQUE KEY user_book_unique (user_id, book_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_book_id (book_id),
+    FOREIGN KEY (user_id) REFERENCES users(_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(bookId) ON DELETE CASCADE
+);

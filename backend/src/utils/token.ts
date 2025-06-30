@@ -1,5 +1,5 @@
 export interface JwtPayload {
-	id: number;
+	id: number; // This will store the _id value
 	iat?: number;
 	exp?: number;
 }

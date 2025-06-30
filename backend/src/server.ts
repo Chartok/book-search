@@ -13,6 +13,11 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// Root route
+app.get('/', (_req, res) => {
+	res.json({ message: 'Welcome to the Book Search API' });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 
