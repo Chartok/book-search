@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { JwtPayload } from '../utils/token';
 
 export function authMiddleware(
 	req: Request,
@@ -10,8 +11,8 @@ export function authMiddleware(
 	if (!token) return res.sendStatus(401);
 
 	try {
-		const payload = jwt.verify(token, process.env.JWT_SECRET!);
-		req.user = payload as any;
+		const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+		req.user = payload;
 		next();
 	} catch {
 		res.sendStatus(403);
