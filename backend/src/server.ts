@@ -10,7 +10,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// Configure CORS to allow requests from the frontend
+app.use(
+	cors({
+		origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Default Vite dev server port
+		methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
+	})
+);
+
 app.use(express.json());
 
 // Root route
@@ -22,7 +30,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 
 sequelize
-	.sync()
+	.sync({ alter: true }) // Use alter: true to automatically apply model changes
 	.then(() => {
 		console.log('✅ DB Synced');
 		app.listen(PORT, () => {

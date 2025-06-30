@@ -52,6 +52,12 @@ User.init(
 			beforeCreate: async (user: User) => {
 				user.password = await bcrypt.hash(user.password, 10);
 			},
+			beforeUpdate: async (user: User) => {
+				// Only hash the password if it has been changed
+				if (user.changed('password')) {
+					user.password = await bcrypt.hash(user.password, 10);
+				}
+			},
 		},
 	}
 );
