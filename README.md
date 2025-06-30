@@ -1,8 +1,8 @@
-# Book Search Engine with GraphQL
+# Simple Book Search Engine
 
 ## Description
 
-A simple book search engine that's being refactored from using RESTful API, to GraphQL API with Apollo server.
+A simple book search engine using RESTful API.
 
 ## Table of Contents
 
