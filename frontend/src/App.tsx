@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import { AuthProvider } from './context/AuthContext';
 import { LibraryProvider } from './context/LibraryContext';
 import { useAuth } from './context/authUtils';
+import SignupPage from './pages/SignupPage';
+import LoginPage from './pages/LoginPage';
 
 // Lazy-load the Library page for better performance
 const Library = lazy(() => import('./pages/Library'));
@@ -26,6 +28,23 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
 
+// Guest route component
+function GuestRoute({ children }: { children: React.ReactNode }) {
+	const { user, loading } = useAuth();
+
+	if (loading) {
+		return (
+			<div className='flex justify-center items-center h-40'>Loading...</div>
+		);
+	}
+
+	if (user) {
+		return <Navigate to='/' replace />;
+	}
+
+	return <>{children}</>;
+}
+
 // App content component that uses hooks
 function AppContent() {
 	return (
@@ -41,6 +60,22 @@ function AppContent() {
 				>
 					<Routes>
 						<Route path='/' element={<Home />} />
+						<Route
+							path='/signup'
+							element={
+								<GuestRoute>
+									<SignupPage />
+								</GuestRoute>
+							}
+						/>
+						<Route
+							path='/login'
+							element={
+								<GuestRoute>
+									<LoginPage />
+								</GuestRoute>
+							}
+						/>
 						<Route
 							path='/library'
 							element={

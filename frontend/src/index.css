@@ -1,32 +1,13 @@
 @import 'tailwindcss';
-/* @import '@tailwindcss/base'; */
-/* @import '@tailwindcss/components'; */
-/* @import '@tailwindcss/utilities'; */
 
 /* ===== Custom Base Layer ===== */
 @layer base {
+	/*
+	  Keep basic styles for html, but remove opinionated styles for other elements
+	  to allow for more flexibility in components.
+	*/
 	html {
 		@apply bg-white text-slate-800 font-sans;
-	}
-
-	h1,
-	h2,
-	h3,
-	h4 {
-		@apply font-semibold text-slate-800; /* Replaced 'text-brand' */
-	}
-
-	a {
-		@apply text-blue-500 underline underline-offset-2 hover:underline; /* Replaced 'text-brand-accent' */
-	}
-
-	button {
-		@apply bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition duration-200; /* Replaced 'bg-brand-accent' */
-	}
-
-	input,
-	textarea {
-		@apply border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition; /* Replaced 'focus:ring-brand-accent' */
 	}
 }
 

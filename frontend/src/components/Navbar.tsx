@@ -21,7 +21,7 @@ export default function Navbar() {
 		e.preventDefault();
 		try {
 			if (authMode === 'login') {
-				await login(email, password);
+				await login(username, password);
 			} else {
 				await register(email, password, username);
 			}
@@ -89,11 +89,11 @@ export default function Navbar() {
 			{/* Auth Modal */}
 			{showAuthModal && (
 				<div
-					className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50'
+					className='fixed inset-0 bg-black text-white bg-opacity-50 flex items-center justify-center p-4 z-50'
 					onClick={() => setShowAuthModal(false)}
 				>
 					<div
-						className='bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md'
+						className='bg-white text-black dark:bg-gray-800 dark:text-gray-50 rounded-lg p-6 w-full max-w-md'
 						onClick={(e) => e.stopPropagation()}
 					>
 						<h2 className='text-xl font-bold mb-4'>
@@ -102,10 +102,10 @@ export default function Navbar() {
 						<form onSubmit={handleAuthSubmit} className='space-y-4'>
 							<div>
 								<input
-									type='email'
-									placeholder='Email'
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
+									type='username'
+									placeholder='Username'
+									value={username}
+									onChange={(e) => setUsername(e.target.value)}
 									required
 									className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
 								/>
@@ -131,7 +131,7 @@ export default function Navbar() {
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 									required
-									className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+									className='w-full bg-white text-black dark:bg-gray-800 dark:text-gray-50 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
 								/>
 							</div>
 
