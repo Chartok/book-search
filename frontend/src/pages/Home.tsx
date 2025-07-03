@@ -18,14 +18,14 @@ export default function Home() {
           </div>
         </>
       ) : (
-        <div className="space-y-4">
+        <div className="bg-gray-100 p-4 rounded-lg borderspace-y-4">
           <p>Sign up or log in to save books to your library.</p>
           <div className="flex gap-4">
-            <Link to="/signup" className="text-blue-600">Sign Up</Link>
-            <Link to="/login" className="text-blue-600">Log In</Link>
+            <Link to="/signup" className="text-blue-600 outline rounded-sm border border-blue-600 px-1 py-1 m-1">Sign Up</Link>
+            <Link to="/login" className="text-blue-600 outline rounded-sm border border-blue-600 px-1 py-1 m-1">Log In</Link>
           </div>
           {!guest && (
-            <button onClick={() => setGuest(true)} className="text-sm text-blue-600">
+            <button onClick={() => setGuest(true)} className="text-sm text-blue-600 outline rounded-sm border border-blue-600 px-2 py-1">
               Continue as guest
             </button>
           )}
