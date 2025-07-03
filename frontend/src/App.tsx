@@ -15,11 +15,7 @@ const Library = lazy(() => import('./pages/Library'));
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const { user, loading } = useAuth();
 
-	if (loading) {
-		return (
-			<div className='flex justify-center items-center h-40'>Loading...</div>
-		);
-	}
+	if (loading) return <div className='p-4'>Loading...</div>;
 
 	if (!user) {
 		return <Navigate to='/' replace />;
@@ -32,11 +28,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function GuestRoute({ children }: { children: React.ReactNode }) {
 	const { user, loading } = useAuth();
 
-	if (loading) {
-		return (
-			<div className='flex justify-center items-center h-40'>Loading...</div>
-		);
-	}
+	if (loading) return <div className='p-4'>Loading...</div>;
 
 	if (user) {
 		return <Navigate to='/' replace />;
@@ -53,7 +45,7 @@ function AppContent() {
 			<div className='container mx-auto px-4 py-6 flex-grow'>
 				<Suspense
 					fallback={
-						<div className='flex justify-center items-center h-40'>
+						<div className='flex-grow p-4'>
 							Loading page...
 						</div>
 					}
