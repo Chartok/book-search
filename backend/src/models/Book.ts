@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import { sequelize } from './index';
+import { DataTypes, Model, Op } from 'sequelize';
+import { sequelize } from '../../db/db';
 
 export class Book extends Model {
 	public bookId!: number;
@@ -13,6 +13,15 @@ export class Book extends Model {
 	public userId!: number | null;
 	public readonly createdAt!: Date;
 	public readonly updatedAt!: Date;
+
+	// Static methods for search functionality
+	public static getSearchColumnName() {
+		return 'title'; // We'll search by title
+	}
+
+	public static getSearchOperator() {
+		return Op.like; // Use LIKE operator for case-insensitive search
+	}
 }
 
 Book.init(

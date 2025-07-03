@@ -25,7 +25,7 @@ declare global {
 			JWT_SECRET: string;
 			NODE_ENV: 'development' | 'production' | 'test';
 			PORT?: string;
-			DATABASE_URL?: string;
+			DB_URI?: string;
 		}
 	}
 }

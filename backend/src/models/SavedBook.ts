@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from './index';
+import { sequelize } from '../../db/db';
 import { User } from './User';
 import { Book } from './Book';
 
@@ -7,6 +7,7 @@ export class UserSavedBook extends Model {
 	public user_saved_book_id!: number;
 	public user_id!: number;
 	public book_id!: number;
+	public shelf!: 'next' | 'finished';
 }
 
 UserSavedBook.init(
@@ -32,6 +33,11 @@ UserSavedBook.init(
 				model: 'books',
 				key: 'bookId',
 			},
+		},
+		shelf: {
+			type: DataTypes.ENUM('next', 'finished'),
+			allowNull: false,
+			defaultValue: 'next',
 		},
 	},
 	{

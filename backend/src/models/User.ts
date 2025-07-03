@@ -1,6 +1,6 @@
 import { DataTypes, Model } from 'sequelize';
 import bcrypt from 'bcrypt';
-import { sequelize } from './index';
+import { sequelize } from '../../db/db';
 import { UserSavedBook } from './SavedBook';
 
 export class User extends Model {
@@ -51,6 +51,12 @@ User.init(
 		hooks: {
 			beforeCreate: async (user: User) => {
 				user.password = await bcrypt.hash(user.password, 10);
+			},
+			beforeUpdate: async (user: User) => {
+				// Only hash the password if it has been changed
+				if (user.changed('password')) {
+					user.password = await bcrypt.hash(user.password, 10);
+				}
 			},
 		},
 	}
