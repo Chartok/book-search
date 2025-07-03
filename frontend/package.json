@@ -4,11 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "start": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "clean": "rm -rf dist"
+    "lint": "eslint ."
   },
   "dependencies": {
     "axios": "^1.10.0",
