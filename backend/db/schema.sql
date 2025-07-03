@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS books (
     authors JSON NOT NULL,
     description VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
-    image VARCHAR(255) NOT NULL,
+    cover VARCHAR(255) NOT NULL,
     link VARCHAR(255) NOT NULL,
     nextBook TINYINT(1) DEFAULT NULL,
     finishedBook TINYINT(1) DEFAULT NULL,

@@ -39,7 +39,7 @@ router.get('/search', async (req: Request, res: Response): Promise<void> => {
 				title: volumeInfo.title || 'Unknown Title',
 				authors: volumeInfo.authors || [],
 				description: volumeInfo.description || '',
-				image: volumeInfo.imageLinks?.thumbnail || '',
+				cover: volumeInfo.imageLinks?.thumbnail || '',
 				link: item.selfLink || '',
 			};
 		});
@@ -57,11 +57,9 @@ router.get('/search', async (req: Request, res: Response): Promise<void> => {
 			console.error('Google Books API error:', error.response?.data);
 
 			if (error.response?.status === 401 || error.response?.status === 403) {
-				res
-					.status(500)
-					.json({
-						error: 'API key error. Please check your Google Books API key.',
-					});
+				res.status(500).json({
+					error: 'API key error. Please check your Google Books API key.',
+				});
 			} else {
 				res.status(500).json({
 					error: 'Failed to search books',
@@ -101,7 +99,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 					title: volumeInfo.title || 'Unknown Title',
 					authors: volumeInfo.authors || [],
 					description: volumeInfo.description || '',
-					image: volumeInfo.imageLinks?.thumbnail || '',
+					cover: volumeInfo.imageLinks?.thumbnail || '',
 					link: item.selfLink || '',
 					categories: volumeInfo.categories || [],
 					publisher: volumeInfo.publisher || '',
@@ -120,7 +118,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 						? JSON.stringify(volumeInfo.authors)
 						: JSON.stringify([]),
 					description: volumeInfo.description || '',
-					image: volumeInfo.imageLinks?.thumbnail || '',
+					cover: volumeInfo.imageLinks?.thumbnail || '',
 					link: item.selfLink || '',
 					nextBook: null,
 					finishedBook: null,
@@ -143,7 +141,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 				? book.authors
 				: JSON.parse(book.authors || '[]'),
 			description: book.description,
-			image: book.image,
+			cover: book.cover,
 			link: book.link,
 		});
 	} catch (error) {
@@ -304,7 +302,7 @@ router.get(
 							? book.authors
 							: JSON.parse(book.authors),
 						description: book.description,
-						cover: book.image,
+						cover: book.cover,
 					},
 				};
 			});

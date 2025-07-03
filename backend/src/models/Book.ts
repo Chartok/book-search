@@ -6,7 +6,7 @@ export class Book extends Model {
 	public authors!: string; // JSON array as string
 	public title!: string;
 	public description!: string;
-	public image!: string;
+	public cover!: string;
 	public link!: string;
 	public nextBook!: boolean | null;
 	public finishedBook!: boolean | null;
@@ -33,7 +33,7 @@ Book.init(
 		authors: { type: DataTypes.JSON, allowNull: false },
 		title: { type: DataTypes.STRING, allowNull: false },
 		description: { type: DataTypes.STRING, allowNull: false },
-		image: { type: DataTypes.STRING, allowNull: false },
+		cover: { type: DataTypes.STRING, allowNull: false },
 		link: { type: DataTypes.STRING, allowNull: false },
 		nextBook: { type: DataTypes.BOOLEAN, allowNull: true },
 		finishedBook: { type: DataTypes.BOOLEAN, allowNull: true },
