@@ -1,4 +1,19 @@
--- Create database
+-- This SQL script sets up the database schema for a book search application.
+-- It creates a database named 'book_search' and defines the necessary tables
+-- for storing user information and book metadata.
+
+-- Ensure the database is dropped if it already exists
+-- This is useful for development purposes to reset the database.
+-- In production, you would typically not drop the database but rather alter it as needed.
+-- Disable foreign key checks to allow dropping tables without constraints
+-- This is necessary to avoid errors when dropping tables that have foreign key constraints.
+SET FOREIGN_KEY_CHECKS = 0;
+-- Drop the database if it exists to start fresh
+DROP DATABASE IF EXISTS book_search;
+
+-- Re-enable foreign key checks after dropping the database
+SET FOREIGN_KEY_CHECKS = 1;
+-- Create a new database for the book search application
 CREATE DATABASE IF NOT EXISTS book_search;
 USE book_search;
 

@@ -1,5 +1,5 @@
 import { DataTypes, Model, Op } from 'sequelize';
-import { sequelize } from './index';
+import { sequelize } from '../../db/db';
 
 export class Book extends Model {
 	public bookId!: number;

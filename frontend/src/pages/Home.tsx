@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import SearchBar from '../components/SearchBar';
-import BookList from '../components/BookList';
-import BookService from '../utils/bookService';
-import type { Book } from '../context/types';
-import Button from '../components/Button';
 import { useAuth } from '../context/authUtils';
 import { useLibrary } from '../context/libraryUtils';
+import type { Book } from '../context/types';
+import BookService from '../utils/bookService';
+import SearchBar from '../components/SearchBar';
+import BookList from '../components/BookList';
 
 export default function Home() {
 	const { user } = useAuth();
@@ -16,7 +15,8 @@ export default function Home() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
-	const handleSearch = async () => {
+	const handleSearch = async (e: React.FormEvent) => {
+		e.preventDefault();
 		if (!query.trim()) return;
 
 		try {
@@ -33,56 +33,60 @@ export default function Home() {
 		}
 	};
 
-	const handleAddBook = async (book: Book) => {
-		if (!user) return;
-		await addBook(book, 'next');
-		// Update UI to show book was added
-		setBooks(
-			books.map((b) => (b.id === book.id ? { ...b, isInLibrary: true } : b))
-		);
-	};
+const handleAddBook = async (book: Book) => {
+	if (!user) return;
+	await addBook(book, 'next');
+	// Update UI to show book was added
+	setBooks(
+		books.map((b) => (b.id === book.id ? { ...b, isInLibrary: true } : b))
+	);
+};
 
 	return (
-		<>
-			<h1>Search for books</h1>
+		<div className="max-w-4xl mx-auto">
+			<h1 className="text-2xl md:text-3xl font-bold text-center mb-6">Search for books</h1>
 			<SearchBar value={query} onChange={setQuery} onSubmit={handleSearch} />
 
-			{loading && <p>Loading...</p>}
-			{error && <p className='error'>{error}</p>}
+			{loading && <p className="text-center">Loading...</p>}
+			{error && <p className="text-red-500 text-center">{error}</p>}
 
 			{books.length > 0 ? (
 				<BookList
 					books={books.map((book) => ({
 						...book,
 						component: user && (
-							<Button
+							<button
 								onClick={() => handleAddBook(book)}
-								style={{ marginTop: '0.5rem' }}
 								disabled={book.isInLibrary}
+								className={`mt-2 px-3 py-1 text-sm rounded ${
+									book.isInLibrary
+										? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+										: 'bg-blue-600 hover:bg-blue-700 text-white'
+								}`}
 							>
-								{book.isInLibrary ? 'Added to Library' : 'Add to Library'}
-							</Button>
+								{book.isInLibrary ? '✓ Added to Library' : 'Add to Library'}
+							</button>
 						),
 					}))}
 				/>
 			) : query && !loading ? (
-				<p>No books found matching "{query}". Try another search term.</p>
+				<p className="text-center text-gray-600 dark:text-gray-400">No books found matching "{query}". Try another search term.</p>
 			) : !query ? (
-				<div style={{ textAlign: 'center', margin: '2rem 0' }}>
-					<p>Search for books above to get started.</p>
+				<div className="text-center my-12">
+					<p className="text-gray-600 dark:text-gray-400 mb-4">Search for books above to get started.</p>
 					{user ? (
 						<Link to='/library'>
-							<Button style={{ marginTop: '1rem' }}>Go to My Library</Button>
+							<button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
+								Go to My Library
+							</button>
 						</Link>
 					) : (
-						<p>
-							<span style={{ fontSize: '0.9rem' }}>
-								Sign in to save books to your library.
-							</span>
+						<p className="text-sm text-gray-500 dark:text-gray-400">
+							Sign in to save books to your library.
 						</p>
 					)}
 				</div>
 			) : null}
-		</>
+		</div>
 	);
 }

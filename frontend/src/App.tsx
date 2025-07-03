@@ -4,7 +4,6 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import { AuthProvider } from './context/AuthContext';
 import { LibraryProvider } from './context/LibraryContext';
-import styles from './App.module.css';
 import { useAuth } from './context/authUtils';
 
 // Lazy-load the Library page for better performance
@@ -15,7 +14,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const { user, loading } = useAuth();
 
 	if (loading) {
-		return <div className={styles.loading}>Loading...</div>;
+		return (
+			<div className='flex justify-center items-center h-40'>Loading...</div>
+		);
 	}
 
 	if (!user) {
@@ -28,11 +29,15 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 // App content component that uses hooks
 function AppContent() {
 	return (
-		<div className={styles.container}>
+		<div className='min-h-screen flex flex-col'>
 			<Navbar />
-			<div className={styles.page}>
+			<div className='container mx-auto px-4 py-6 flex-grow'>
 				<Suspense
-					fallback={<div className={styles.loading}>Loading page...</div>}
+					fallback={
+						<div className='flex justify-center items-center h-40'>
+							Loading page...
+						</div>
+					}
 				>
 					<Routes>
 						<Route path='/' element={<Home />} />

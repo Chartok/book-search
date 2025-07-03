@@ -1,36 +1,172 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../context/authUtils';
-import AuthModal from './AuthModal';
-import Button from './Button';
-import styles from './Navbar.module.css';
 
 export default function Navbar() {
-	const { user, logout, loading } = useAuth();
-	const [open, setOpen] = useState(false);
+	const {
+		user,
+		logout,
+		login,
+		register,
+		loading: authLoading,
+		error: authError,
+	} = useAuth();
+	const [showAuthModal, setShowAuthModal] = useState(false);
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [username, setUsername] = useState('');
+	const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+
+	const handleAuthSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+			if (authMode === 'login') {
+				await login(email, password);
+			} else {
+				await register(email, password, username);
+			}
+			// Reset form and close modal if successful
+			setEmail('');
+			setPassword('');
+			setUsername('');
+			setShowAuthModal(false);
+		} catch (err) {
+			console.error('Auth error:', err);
+		}
+	};
 
 	return (
 		<>
-			<nav className={styles.nav}>
-				<Link to='/' className={styles.brand}>
-					📚 BookSearch
-				</Link>
-				<div className={styles.links}>
-					<Link to='/'>Home</Link>
-					{user && <Link to='/library'>My library</Link>}
-				</div>
-				{loading ? (
-					<span>Loading...</span>
-				) : user ? (
-					<div className={styles.userBox}>
-						<span>Welcome, {user.username || user.email}</span>
-						<Button onClick={logout}>Logout</Button>
+			<nav className='bg-white dark:bg-gray-800 shadow-md'>
+				<div className='container mx-auto px-4 py-3 flex justify-between items-center'>
+					<Link
+						to='/'
+						className='text-xl font-bold text-blue-600 dark:text-blue-400 flex items-center'
+					>
+						📚 BookSearch
+					</Link>
+					<div className='flex space-x-4 items-center'>
+						<Link
+							to='/'
+							className='hover:text-blue-600 dark:hover:text-blue-400'
+						>
+							Home
+						</Link>
+						{user && (
+							<Link
+								to='/library'
+								className='hover:text-blue-600 dark:hover:text-blue-400'
+							>
+								My library
+							</Link>
+						)}
 					</div>
-				) : (
-					<Button onClick={() => setOpen(true)}>Login / Register</Button>
-				)}
+					{authLoading ? (
+						<span className='text-sm'>Loading...</span>
+					) : user ? (
+						<div className='flex items-center gap-3'>
+							<span className='text-sm'>
+								Welcome, {user.username || user.email}
+							</span>
+							<button
+								onClick={logout}
+								className='bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm'
+							>
+								Logout
+							</button>
+						</div>
+					) : (
+						<button
+							onClick={() => setShowAuthModal(true)}
+							className='bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm'
+						>
+							Login / Register
+						</button>
+					)}
+				</div>
 			</nav>
-			<AuthModal open={open} onClose={() => setOpen(false)} />
+
+			{/* Auth Modal */}
+			{showAuthModal && (
+				<div
+					className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50'
+					onClick={() => setShowAuthModal(false)}
+				>
+					<div
+						className='bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md'
+						onClick={(e) => e.stopPropagation()}
+					>
+						<h2 className='text-xl font-bold mb-4'>
+							{authMode === 'login' ? 'Log in' : 'Register'}
+						</h2>
+						<form onSubmit={handleAuthSubmit} className='space-y-4'>
+							<div>
+								<input
+									type='email'
+									placeholder='Email'
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
+									required
+									className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+								/>
+							</div>
+
+							{authMode === 'register' && (
+								<div>
+									<input
+										type='text'
+										placeholder='Username'
+										value={username}
+										onChange={(e) => setUsername(e.target.value)}
+										required
+										className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+									/>
+								</div>
+							)}
+
+							<div>
+								<input
+									type='password'
+									placeholder='Password'
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
+									required
+									className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+								/>
+							</div>
+
+							{authError && <p className='text-red-500 text-sm'>{authError}</p>}
+
+							<button
+								type='submit'
+								disabled={authLoading}
+								className='w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md'
+							>
+								{authLoading
+									? 'Please wait...'
+									: authMode === 'login'
+									? 'Log in'
+									: 'Create account'}
+							</button>
+						</form>
+
+						<p className='mt-4 text-sm text-center'>
+							{authMode === 'login'
+								? "Don't have an account?"
+								: 'Have an account?'}{' '}
+							<button
+								type='button'
+								className='text-blue-600 hover:underline'
+								onClick={() =>
+									setAuthMode(authMode === 'login' ? 'register' : 'login')
+								}
+							>
+								{authMode === 'login' ? 'Register' : 'Log in'}
+							</button>
+						</p>
+					</div>
+				</div>
+			)}
 		</>
 	);
 }
