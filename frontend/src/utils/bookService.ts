@@ -8,7 +8,7 @@ export interface SearchResponse {
 
 export const BookService = {
 	/**
-	 * Search for books using the public API endpoint
+	 * Search for books using the GOOGLE_BOOKS_API_KEY
 	 */
 	search: async (
 		query: string,
@@ -16,12 +16,26 @@ export const BookService = {
 		limit = 10
 	): Promise<SearchResponse> => {
 		try {
+			console.log(`Searching with baseURL: ${api.defaults.baseURL}`);
+			console.log(
+				`Search parameters: query=${query}, page=${page}, limit=${limit}`
+			);
+
 			const response = await api.get('/books/search', {
 				params: { query, page, limit },
 			});
+
+			console.log('Search response:', response.data);
 			return response.data;
 		} catch (error) {
 			console.error('Book search error:', error);
+			console.error('API URL:', api.defaults.baseURL);
+
+			if (error.response) {
+				console.error('Error response:', error.response.data);
+				console.error('Status code:', error.response.status);
+			}
+
 			throw error;
 		}
 	},

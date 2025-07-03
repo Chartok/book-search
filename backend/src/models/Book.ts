@@ -11,8 +11,6 @@ export class Book extends Model {
 	public nextBook!: boolean | null;
 	public finishedBook!: boolean | null;
 	public userId!: number | null;
-	public readonly createdAt!: Date;
-	public readonly updatedAt!: Date;
 
 	// Static methods for search functionality
 	public static getSearchColumnName() {
@@ -47,7 +45,5 @@ Book.init(
 		tableName: 'books',
 		timestamps: true,
 		underscored: true,
-		createdAt: 'created_at',
-		updatedAt: 'updated_at',
 	}
 );

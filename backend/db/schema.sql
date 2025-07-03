@@ -25,8 +25,6 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     book_count INT DEFAULT 0,
     saved_books JSON DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Table to store book metadata
@@ -40,8 +38,6 @@ CREATE TABLE IF NOT EXISTS books (
     nextBook TINYINT(1) DEFAULT NULL,
     finishedBook TINYINT(1) DEFAULT NULL,
     userId INT DEFAULT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Join table to track which books a user has saved

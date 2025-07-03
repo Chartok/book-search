@@ -10,8 +10,6 @@ export class User extends Model {
 	public password!: string;
 	public bookCount!: number;
 	public savedBooks!: UserSavedBook[];
-	public readonly createdAt!: Date;
-	public readonly updatedAt!: Date;
 
 	public async isValidPassword(password: string): Promise<boolean> {
 		return await bcrypt.compare(password, this.password);
@@ -46,8 +44,6 @@ User.init(
 		tableName: 'users',
 		timestamps: true,
 		underscored: true, // This tells Sequelize that the DB columns use snake_case
-		createdAt: 'created_at', // Map camelCase to snake_case
-		updatedAt: 'updated_at', // Map camelCase to snake_case
 		hooks: {
 			beforeCreate: async (user: User) => {
 				user.password = await bcrypt.hash(user.password, 10);
