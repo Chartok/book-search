@@ -1,43 +1,46 @@
 @import 'tailwindcss';
-@import './tailwind.css';
+/* @import '@tailwindcss/base'; */
+/* @import '@tailwindcss/components'; */
+/* @import '@tailwindcss/utilities'; */
 
-body {
-	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-}
-
-h1 {
-	font-size: 3.2em;
-	line-height: 1.1;
-}
-
-button {
-	border-radius: 8px;
-	border: 1px solid transparent;
-	padding: 0.6em 1.2em;
-	font-size: 1em;
-	font-weight: 500;
-	font-family: inherit;
-	background-color: #1a1a1a;
-	cursor: pointer;
-	transition: border-color 0.25s;
-}
-button:hover {
-	border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-	:root {
-		color: #213547;
-		background-color: #ffffff;
+/* ===== Custom Base Layer ===== */
+@layer base {
+	html {
+		@apply bg-white text-slate-800 font-sans;
 	}
-	a:hover {
-		color: #747bff;
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		@apply font-semibold text-slate-800; /* Replaced 'text-brand' */
 	}
+
+	a {
+		@apply text-blue-500 underline underline-offset-2 hover:underline; /* Replaced 'text-brand-accent' */
+	}
+
 	button {
-		background-color: #f9f9f9;
+		@apply bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition duration-200; /* Replaced 'bg-brand-accent' */
+	}
+
+	input,
+	textarea {
+		@apply border border-slate-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition; /* Replaced 'focus:ring-brand-accent' */
+	}
+}
+
+/* ===== Utility Tweaks (optional) ===== */
+@layer utilities {
+	.glass {
+		@apply backdrop-blur-md bg-white/30 border border-white/20 shadow-lg;
+	}
+
+	.center-flex {
+		@apply flex items-center justify-center;
+	}
+
+	.max-container {
+		@apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 	}
 }
