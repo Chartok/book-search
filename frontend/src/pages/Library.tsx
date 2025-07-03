@@ -13,196 +13,129 @@ export default function Library() {
 		moveBook,
 		removeBook,
 		refreshLibrary,
-		loading: libraryLoading,
-		error: libraryError,
+		loading,
+		error,
 	} = useLibrary();
 	const [query, setQuery] = useState('');
-	const [searchResults, setSearchResults] = useState<Book[]>([]);
+	const [results, setResults] = useState<Book[]>([]);
 	const [searching, setSearching] = useState(false);
-	const [searchError, setSearchError] = useState<string | null>(null);
 
-	// Refresh library when component mounts
 	useEffect(() => {
-		if (user) {
-			refreshLibrary();
-		}
+		if (user) refreshLibrary();
 	}, [user, refreshLibrary]);
 
-	// Redirect if not logged in
 	if (!user) return <Navigate to='/' replace />;
 
 	const handleSearch = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!query.trim()) return;
-
 		try {
 			setSearching(true);
-			setSearchError(null);
-
 			const response = await BookService.search(query);
-
-			// Filter out books that are already in the library
-			const allLibraryBookIds = [
+			const libraryIds = [
 				...shelves.next.map((b) => b.id),
 				...shelves.finished.map((b) => b.id),
 			];
-
-			const filteredResults = response.books.filter(
-				(book) => !allLibraryBookIds.includes(book.id)
-			);
-
-			setSearchResults(filteredResults);
-		} catch (err: Error | unknown) {
-			console.error('Search error:', err);
-			setSearchError('Failed to search books. Please try again.');
+			setResults(response.books.filter((b) => !libraryIds.includes(b.id)));
 		} finally {
 			setSearching(false);
 		}
 	};
 
-	const handleAddBook = async (book: Book) => {
+	const handleAdd = async (book: Book) => {
 		await addBook(book, 'next');
-		// Remove from search results after adding
-		setSearchResults((prev) => prev.filter((b) => b.id !== book.id));
+		setResults((r) => r.filter((b) => b.id !== book.id));
 	};
 
-	// Helper function to render book cards
-	const renderBookCard = (book: Book, actions: React.ReactNode) => (
-		<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
-			<div className="flex p-4">
-				{book.cover ? (
-					<img src={book.cover} alt={book.title} className="w-20 h-28 object-cover rounded" />
-				) : (
-					<div className="w-20 h-28 bg-gray-200 dark:bg-gray-700 flex items-center justify-center rounded">
-						<span className="text-gray-500 dark:text-gray-400">No cover</span>
-					</div>
-				)}
-				<div className="ml-4 flex flex-col">
-					<h3 className="font-semibold text-lg">{book.title}</h3>
-					{book.authors && <p className="text-gray-600 dark:text-gray-400 text-sm">{book.authors.join(', ')}</p>}
-					{actions}
-				</div>
-			</div>
-		</div>
+	const renderBook = (book: Book, actions: React.ReactNode) => (
+		<li key={book.id} className='border p-2'>
+			<h3 className='font-semibold'>{book.title}</h3>
+			{book.authors && <p className='text-sm'>{book.authors.join(', ')}</p>}
+			{actions}
+		</li>
 	);
 
 	return (
-		<div className="max-w-4xl mx-auto">
-			<h1 className="text-2xl md:text-3xl font-bold text-center mb-6">Your library</h1>
-			
-			<div className="mb-8">
-				<h2 className="text-xl font-semibold mb-4">Add more books</h2>
-				
-				{/* Search Bar */}
-				<form 
-					className="flex w-full max-w-md mx-auto mb-6" 
-					onSubmit={handleSearch}
-				>
-					<input
-						type="text"
-						placeholder="Search for books…"
-						value={query}
-						onChange={(e) => setQuery(e.target.value)}
-						className="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-600"
-					/>
-					<button 
-						type="submit"
-						className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-md"
-					>
-						Search
-					</button>
-				</form>
+		<div className='max-w-3xl mx-auto p-4'>
+			<h1 className='text-xl font-bold mb-4'>Your library</h1>
 
-				{searching && <p className="text-center">Searching...</p>}
-				{searchError && <p className="text-red-500 text-center">{searchError}</p>}
+			<form onSubmit={handleSearch} className='flex mb-4'>
+				<input
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
+					placeholder='Search for books'
+					className='flex-grow border px-2 py-1'
+				/>
+				<button type='submit' className='ml-2 px-3 py-1 bg-blue-600 text-white'>
+					Search
+				</button>
+			</form>
+			{searching && <p>Searching...</p>}
+			{results.length > 0 && (
+				<ul className='grid gap-2 mb-6'>
+					{results.map((b) =>
+						renderBook(
+							b,
+							<button
+								onClick={() => handleAdd(b)}
+								className='mt-1 px-2 py-1 text-sm bg-blue-600 text-white'
+							>
+								Save
+							</button>
+						)
+					)}
+				</ul>
+			)}
 
-				{/* Search Results */}
-				{searchResults.length > 0 ? (
-					<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
-						{searchResults.map((book) => (
-							<li key={book.id}>
-								{renderBookCard(
-									book,
-									<button
-										onClick={() => handleAddBook(book)}
-										className="mt-2 px-3 py-1 text-sm rounded bg-blue-600 hover:bg-blue-700 text-white"
-									>
-										Save as "next"
-									</button>
-								)}
-							</li>
-						))}
-					</ul>
-				) : (
-					query && !searching && <p className="text-center text-gray-600 dark:text-gray-400">No new books found for "{query}"</p>
-				)}
-			</div>
+			{loading && <p>Loading your library...</p>}
+			{error && <p className='text-red-500'>{error}</p>}
 
-			{libraryLoading && <p className="text-center">Loading your library...</p>}
-			{libraryError && <p className="text-red-500 text-center">{libraryError}</p>}
+			<h2 className='font-semibold mt-4'>Next up</h2>
+			{shelves.next.length > 0 ? (
+				<ul className='grid gap-2 mb-6'>
+					{shelves.next.map((b) =>
+						renderBook(
+							b,
+							<div className='flex gap-2 mt-1'>
+								<button
+									onClick={() => moveBook(b.id, 'finished')}
+									className='px-2 py-1 text-sm bg-green-600 text-white'
+								>
+									Finish
+								</button>
+								<button
+									onClick={() => removeBook(b.id)}
+									className='px-2 py-1 text-sm bg-red-600 text-white'
+								>
+									Remove
+								</button>
+							</div>
+						)
+					)}
+				</ul>
+			) : (
+				<p>No books in this list.</p>
+			)}
 
-			{/* Next Up Section */}
-			<div className="mb-8">
-				<h2 className="text-xl font-semibold mb-4">
-					Next up {shelves.next.length > 0 && `(${shelves.next.length})`}
-				</h2>
-				
-				{shelves.next.length > 0 ? (
-					<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
-						{shelves.next.map((book) => (
-							<li key={book.id}>
-								{renderBookCard(
-									book,
-									<div className="flex gap-2 mt-2">
-										<button
-											onClick={() => moveBook(book.id, 'finished')}
-											className="px-3 py-1 text-sm rounded bg-green-600 hover:bg-green-700 text-white"
-										>
-											Mark finished
-										</button>
-										<button
-											onClick={() => removeBook(book.id)}
-											className="px-3 py-1 text-sm rounded bg-red-600 hover:bg-red-700 text-white"
-										>
-											Remove
-										</button>
-									</div>
-								)}
-							</li>
-						))}
-					</ul>
-				) : (
-					<p className="text-center text-gray-600 dark:text-gray-400">You don't have any books in your "Next up" list yet.</p>
-				)}
-			</div>
-
-			{/* Finished Section */}
-			<div className="mb-8">
-				<h2 className="text-xl font-semibold mb-4">
-					Finished {shelves.finished.length > 0 && `(${shelves.finished.length})`}
-				</h2>
-				
-				{shelves.finished.length > 0 ? (
-					<ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
-						{shelves.finished.map((book) => (
-							<li key={book.id}>
-								{renderBookCard(
-									book,
-									<button
-										onClick={() => removeBook(book.id)}
-										className="mt-2 px-3 py-1 text-sm rounded bg-red-600 hover:bg-red-700 text-white"
-									>
-										Remove
-									</button>
-								)}
-							</li>
-						))}
-					</ul>
-				) : (
-					<p className="text-center text-gray-600 dark:text-gray-400">You haven't finished any books yet.</p>
-				)}
-			</div>
+			<h2 className='font-semibold mt-4'>Finished</h2>
+			{shelves.finished.length > 0 ? (
+				<ul className='grid gap-2'>
+					{shelves.finished.map((b) =>
+						renderBook(
+							b,
+							<button
+								onClick={() => removeBook(b.id)}
+								className='mt-1 px-2 py-1 text-sm bg-red-600 text-white'
+							>
+								Remove
+							</button>
+						)
+					)}
+				</ul>
+			) : (
+				<p>You haven't finished any books.</p>
+			)}
 		</div>
-	);
+	);	
 }
 

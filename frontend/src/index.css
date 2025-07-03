@@ -1,18 +1,20 @@
 @import 'tailwindcss';
+@import '@tailwindcss/preflight';
+@import '@tailwindcss/utilities';
 
-/* ===== Custom Base Layer ===== */
-@layer base {
+/* ===== Custom Base Layer =====
+@layer base { */
 	/*
 	  Keep basic styles for html, but remove opinionated styles for other elements
 	  to allow for more flexibility in components.
 	*/
-	html {
+	/* html {
 		@apply bg-white text-slate-800 font-sans;
 	}
-}
+} */
 
 /* ===== Utility Tweaks (optional) ===== */
-@layer utilities {
+/* @layer utilities {
 	.glass {
 		@apply backdrop-blur-md bg-white/30 border border-white/20 shadow-lg;
 	}
@@ -24,4 +26,4 @@
 	.max-container {
 		@apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 	}
-}
+} */
