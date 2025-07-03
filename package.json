@@ -1,0 +1,36 @@
+{
+  "name": "book-search",
+  "version": "1.0.0",
+  "description": "Book search engine with React frontend and Express backend",
+  "private": true,
+  "scripts": {
+    "setup": "npm run install:frontend && npm run install:backend",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "start": "cd backend && npm run start",
+    "lint": "cd frontend && npm run lint",
+    "preview": "cd frontend && npm run preview",
+    "clean": "npm run clean:frontend && npm run clean:backend",
+    "clean:frontend": "cd frontend && rm -rf dist node_modules",
+    "clean:backend": "cd backend && rm -rf dist node_modules"
+  },
+  "keywords": [
+    "books",
+    "search",
+    "react",
+    "typescript",
+    "express",
+    "mysql"
+  ],
+  "author": "Mohammed Bhimjee",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
