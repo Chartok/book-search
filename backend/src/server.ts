@@ -1,9 +1,10 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { sequelize } from '../db/db';
-import authRoutes from './routes/auth';
-import bookRoutes from './routes/books';
+import './models/index.ts';
+import { sequelize } from '../src/db/dbConnection.ts';
+import authRoutes from './routes/auth.ts';
+import bookRoutes from './routes/books.ts';
 
 dotenv.config();
 
@@ -35,6 +36,9 @@ const startServer = async () => {
 		await sequelize.authenticate();
 		console.log('Database connection established successfully.');
 
+		const users = await User.findAll();
+		console.log('Users:', users);
+
 		app.listen(PORT, () => {
 			console.log(`Server is running on http://localhost:${PORT}`);
 		});
@@ -45,5 +49,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-

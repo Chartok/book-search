@@ -1,5 +1,5 @@
-import { JwtPayload } from '../utils/token';
-import { User } from '../models/User';
+import { JwtPayload } from '../utils/token.ts';
+import { User } from '../models/User.ts';
 
 // Extend Express Request interface globally
 declare global {

@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
 import bcrypt from 'bcrypt';
-import { sequelize } from '../../db/db';
-import { UserSavedBook } from './SavedBook';
+import { sequelize } from '../db/dbConnection.ts';
+import { UserSavedBook } from './SavedBook.ts';
 
 export class User extends Model {
 	public _id!: number;

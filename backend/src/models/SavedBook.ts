@@ -1,7 +1,7 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from '../../db/db';
-import { User } from './User';
-import { Book } from './Book';
+import { sequelize } from '../db/dbConnection.ts';
+import { User } from './User.ts';
+import { Book } from './Book.ts';
 
 export class UserSavedBook extends Model {
 	public user_saved_book_id!: number;

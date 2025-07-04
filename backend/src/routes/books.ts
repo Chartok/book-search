@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
 import axios from 'axios';
-import { Book } from '../models/Book';
-import { UserSavedBook } from '../models/SavedBook';
+import { Book } from '../models/Book.ts';
+import { UserSavedBook } from '../models/SavedBook.ts';
 import { Op } from 'sequelize';
-import { authMiddleware } from '../middleware/auth';
-import '../types/index'; // Import type declarations
+import { authMiddleware } from '../middleware/auth.ts';
+import '../types/index.ts'; // Import type declarations
 
 const router = Router();
 const GOOGLE_BOOKS_API_KEY = process.env.GOOGLE_BOOKS_API_KEY;

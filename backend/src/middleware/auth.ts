@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
-import { JwtPayload } from '../utils/token';
+import { User } from '../models/User.ts';
+import { JwtPayload } from '../utils/token.ts';
 
 interface AuthenticatedRequest extends Request {
 	user?: User;

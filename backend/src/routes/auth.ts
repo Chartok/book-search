@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
-import { User } from '../models/User';
+import { User } from '../models/User.ts';
 import jwt from 'jsonwebtoken';
-import { JwtPayload } from '../utils/token';
-import { authMiddleware } from '../middleware/auth';
-import { isAuthenticatedRequest } from '../types/auth';
-import '../types/index'; // Import type declarations
+import { JwtPayload } from '../utils/token.ts';
+import { authMiddleware } from '../middleware/auth.ts';
+import { isAuthenticatedRequest } from '../types/auth.ts';
+import '../types/index.ts'; // Import type declarations
 
 const router = Router();
 

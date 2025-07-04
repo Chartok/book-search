@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { User } from '../models/User';
-import { JwtPayload } from '../utils/token';
+import { User } from '../models/User.ts';
+import { JwtPayload } from '../utils/token.ts';
 
 // Type guard to check if request has authenticated user
 export function isAuthenticatedRequest(req: Request): req is Request & {
