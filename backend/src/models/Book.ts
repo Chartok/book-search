@@ -37,12 +37,12 @@ Book.init(
 		link: { type: DataTypes.STRING, allowNull: false },
 		nextBook: { type: DataTypes.BOOLEAN, allowNull: true },
 		finishedBook: { type: DataTypes.BOOLEAN, allowNull: true },
-		userId: { type: DataTypes.INTEGER, allowNull: true, references: { model: 'user', key: '_id' } },
+		userId: { type: DataTypes.INTEGER, allowNull: true, references: { model: 'User', key: '_id' } },
 	},
 	{
 		sequelize,
-		modelName: 'book',
-		tableName: 'books',
+		modelName: 'Book',
+		tableName: 'book',
 		timestamps: true,
 		underscored: true,
 	}

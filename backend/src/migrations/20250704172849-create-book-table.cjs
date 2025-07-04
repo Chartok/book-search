@@ -43,13 +43,34 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
-          key: 'id',
+          model: 'User',
+          key: '_id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-    })
+    });
+    await queryInterface.addIndex('Book', ['userId'], {
+      name: 'book_user_index',
+    });
+    await queryInterface.addIndex('Book', ['title'], {
+      name: 'book_title_index',
+    });
+    await queryInterface.addIndex('Book', ['authors'], {
+      name: 'book_authors_index',
+    });
+    await queryInterface.addIndex('Book', ['nextBook'], {
+      name: 'book_next_index',
+    });
+    await queryInterface.addIndex('Book', ['finishedBook'], {
+      name: 'book_finished_index',
+    });
+
+    await queryInterface.addIndex('Book', ['bookId'], {
+      name: 'book_id_index',
+    });
+
+    
   },
 
   async down (queryInterface, Sequelize) {

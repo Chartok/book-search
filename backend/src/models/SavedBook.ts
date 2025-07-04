@@ -22,7 +22,7 @@ UserSavedBook.init(
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			references: {
-				model: 'users',
+				model: 'User',
 				key: '_id',
 			},
 		},
@@ -30,7 +30,7 @@ UserSavedBook.init(
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			references: {
-				model: 'books',
+				model: 'Book',
 				key: 'bookId',
 			},
 		},

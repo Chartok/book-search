@@ -24,20 +24,21 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     book_count INT DEFAULT 0,
-    saved_books JSON DEFAULT NULL,
+    saved_books JSON DEFAULT NULL
 );
 
 -- Table to store book metadata
 CREATE TABLE IF NOT EXISTS books (
     bookId INT AUTO_INCREMENT PRIMARY KEY,
     authors JSON NOT NULL,
-    description VARCHAR(255) NOT NULL,
+    description TEXT,
     title VARCHAR(255) NOT NULL,
-    cover VARCHAR(255) NOT NULL,
-    link VARCHAR(255) NOT NULL,
-    nextBook TINYINT(1) DEFAULT NULL,
-    finishedBook TINYINT(1) DEFAULT NULL,
-    userId INT DEFAULT NULL,
+    cover VARCHAR(255),
+    link VARCHAR(255),
+    nextBook BOOLEAN DEFAULT FALSE,
+    finishedBook BOOLEAN DEFAULT FALSE,
+    userId INT,
+    FOREIGN KEY (userId) REFERENCES users(_id) ON DELETE CASCADE
 );
 
 -- Join table to track which books a user has saved
@@ -50,6 +51,6 @@ CREATE TABLE IF NOT EXISTS user_saved_books (
     UNIQUE KEY user_book_unique (user_id, book_id),
     INDEX idx_user_id (user_id),
     INDEX idx_book_id (book_id),
-    FOREIGN KEY (user_id) REFERENCES users(_id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES books(bookId) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES user(_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES book(bookId) ON DELETE CASCADE
 );
