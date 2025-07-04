@@ -41,7 +41,7 @@ User.init(
 	{
 		sequelize,
 		modelName: 'User',
-		tableName: 'user',
+		tableName: 'Users',
 		timestamps: true,
 		underscored: true, // This tells Sequelize that the DB columns use snake_case
 		hooks: {

@@ -5,6 +5,7 @@ import './models/index.ts';
 import { sequelize } from '../src/db/dbConnection.ts';
 import authRoutes from './routes/auth.ts';
 import bookRoutes from './routes/books.ts';
+import { User } from './models/User.ts';
 
 dotenv.config();
 
@@ -35,6 +36,10 @@ const startServer = async () => {
 	try {
 		await sequelize.authenticate();
 		console.log('Database connection established successfully.');
+
+		// // Sync database models before querying
+		// await sequelize.sync({ alter: true });
+		// console.log('Database synchronized successfully');
 
 		const users = await User.findAll();
 		console.log('Users:', users);

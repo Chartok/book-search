@@ -18,7 +18,7 @@ CREATE DATABASE IF NOT EXISTS book_search;
 USE book_search;
 
 -- Table to store users
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS Users (
     _id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,

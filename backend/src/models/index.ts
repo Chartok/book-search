@@ -1,9 +1,9 @@
 import { Sequelize, DataTypes } from 'sequelize';
 import { sequelize } from '../db/dbConnection.ts';
 
-import User from './User.ts';
-import Book from './Book.ts';
-import UserSavedBook from './SavedBook.ts';
+import { User } from './User.ts';
+import { Book } from './Book.ts';
+import { UserSavedBook } from './SavedBook.ts';
 
 // Define associations
 User.hasMany(UserSavedBook, {
@@ -24,13 +24,13 @@ UserSavedBook.belongsTo(Book, {
 	targetKey: 'bookId',
 });
 
-// Sync models with the database
-const syncModels = async () => {
-	await sequelize.sync({ alter: true });
-};
-syncModels()
-  .then(() => console.log('Models synced successfully'))
-  .catch(err => console.error('Error syncing models:', err));
+// // Sync models with the database
+// const syncModels = async () => {
+// 	await sequelize.sync({ alter: true });
+// };
+// syncModels()
+//   .then(() => console.log('Models synced successfully'))
+//   .catch(err => console.error('Error syncing models:', err));
 
 // Export models
 export { User, Book, UserSavedBook, sequelize, Sequelize };

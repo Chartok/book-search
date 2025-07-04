@@ -1,7 +1,12 @@
 import { Router, Request, Response } from 'express';
 import { User } from '../models/User.ts';
 import jwt from 'jsonwebtoken';
-import { JwtPayload } from '../utils/token.ts';
+// Define JwtPayload locally to avoid import issues
+interface JwtPayload {
+  id: number;
+  iat?: number;
+  exp?: number;
+}
 import { authMiddleware } from '../middleware/auth.ts';
 import { isAuthenticatedRequest } from '../types/auth.ts';
 import '../types/index.ts'; // Import type declarations

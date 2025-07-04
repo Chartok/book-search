@@ -1,7 +1,14 @@
+import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User.ts';
-import { JwtPayload } from '../utils/token.ts';
+
+// Define JwtPayload locally to avoid import issues
+interface JwtPayload {
+	id: number;
+	iat?: number;
+	exp?: number;
+}
 
 interface AuthenticatedRequest extends Request {
 	user?: User;
@@ -24,6 +31,7 @@ export async function authMiddleware(
 	}
 
 	try {
+		// Verify the token directly with jwt
 		const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
 		// Look up the actual user object
