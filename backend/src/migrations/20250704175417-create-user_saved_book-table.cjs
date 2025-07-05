@@ -31,16 +31,16 @@ module.exports = {
 				defaultValue: 'next',
 			},
 		});
-		await queryInterface.addIndex('UserSavedBook', ['user_id', 'book_id'], {
+		await queryInterface.addIndex('user_saved_books', ['user_id', 'book_id'], {
 			unique: true,
 			name: 'user_book_unique_index',
 		});
 	},
 
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable('UserSavedBook');
+		await queryInterface.dropTable('user_saved_books');
 		await queryInterface.sequelize.query(
-			'DROP TYPE IF EXISTS "enum_UserSavedBook_shelf";'
+			'DROP TYPE IF EXISTS "enum_user_saved_books_shelf";'
 		); // Drop the ENUM type if it exists
 	},
 };

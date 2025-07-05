@@ -19,16 +19,22 @@ module.exports = {
 				allowNull: false,
 				unique: true,
 			},
-			passwordHash: {
+			password: {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			createdAt: Sequelize.DATE,
-			updatedAt: Sequelize.DATE,
+			bookCount: {
+				type: Sequelize.INTEGER,
+				defaultValue: 0,
+				allowNull: false,
+			},
+			savedBooks: {
+				type: Sequelize.JSON,
+				defaultValue: [],
+			},
 		});
 
 		// Adding indexes for performance optimization
-
 	},
 
 	async down(queryInterface, Sequelize) {

@@ -30,19 +30,19 @@ User.init(
 		bookCount: {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
-			field: 'book_count',
+			field: 'bookCount',
 		},
 		savedBooks: {
 			type: DataTypes.JSON,
 			allowNull: true,
-			field: 'saved_books',
+			field: 'savedBooks',
 		},
 	},
 	{
 		sequelize,
 		modelName: 'User',
 		tableName: 'Users',
-		timestamps: true,
+		timestamps: false,
 		underscored: true, // This tells Sequelize that the DB columns use snake_case
 		hooks: {
 			beforeCreate: async (user: User) => {

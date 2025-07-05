@@ -23,8 +23,8 @@ CREATE TABLE IF NOT EXISTS Users (
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    book_count INT DEFAULT 0,
-    saved_books JSON DEFAULT NULL
+    bookCount INT DEFAULT 0,
+    savedBooks JSON DEFAULT NULL
 );
 
 -- Table to store book metadata
