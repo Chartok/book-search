@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS Users (
 );
 
 -- Table to store book metadata
-CREATE TABLE IF NOT EXISTS books (
+CREATE TABLE IF NOT EXISTS Books (
     bookId INT AUTO_INCREMENT PRIMARY KEY,
     authors JSON NOT NULL,
     description TEXT,
@@ -51,6 +51,6 @@ CREATE TABLE IF NOT EXISTS user_saved_books (
     UNIQUE KEY user_book_unique (user_id, book_id),
     INDEX idx_user_id (user_id),
     INDEX idx_book_id (book_id),
-    FOREIGN KEY (user_id) REFERENCES user(_id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES book(bookId) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(bookId) ON DELETE CASCADE
 );
