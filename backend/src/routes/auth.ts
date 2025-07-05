@@ -3,9 +3,9 @@ import { User } from '../models/User.ts';
 import jwt from 'jsonwebtoken';
 // Define JwtPayload locally to avoid import issues
 interface JwtPayload {
-  id: number;
-  iat?: number;
-  exp?: number;
+	id: number;
+	iat?: number;
+	exp?: number;
 }
 import { authMiddleware } from '../middleware/auth.ts';
 import { isAuthenticatedRequest } from '../types/auth.ts';
@@ -65,12 +65,12 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		 // Check if JWT_SECRET is defined
-    if (!process.env.JWT_SECRET) {
-      console.error('JWT_SECRET is not defined');
-      res.status(500).json({ error: 'Server configuration error' });
-      return;
-    }
+		// Check if JWT_SECRET is defined
+		if (!process.env.JWT_SECRET) {
+			console.error('JWT_SECRET is not defined');
+			res.status(500).json({ error: 'Server configuration error' });
+			return;
+		}
 
 		const payload: JwtPayload = { id: user._id };
 		const token = jwt.sign(payload, process.env.JWT_SECRET!, {
