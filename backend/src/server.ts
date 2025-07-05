@@ -5,6 +5,7 @@ import './models/index.ts';
 import { sequelize } from '../src/db/dbConnection.ts';
 import authRoutes from './routes/auth.ts';
 import bookRoutes from './routes/books.ts';
+import usersRouter from './routes/users.ts';
 import { User } from './models/User.ts';
 
 dotenv.config();
@@ -15,9 +16,9 @@ const PORT = process.env.PORT || 5000;
 // Configure CORS to allow requests from the frontend
 app.use(
 	cors({
-		origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Default Vite dev server port
-		methods: ['GET', 'POST', 'PUT', 'DELETE'],
-		allowedHeaders: ['Content-Type', 'Authorization'],
+		// origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Default Vite dev server port
+		// methods: ['GET', 'POST', 'PUT', 'DELETE'],
+		// allowedHeaders: ['Content-Type', 'Authorization'],
 	})
 );
 
@@ -27,6 +28,8 @@ app.use(express.json());
 app.get('/', (_req, res) => {
 	res.json({ message: 'Welcome to the Book Search API' });
 });
+
+app.use('/api/users', usersRouter);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
