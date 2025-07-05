@@ -2,8 +2,8 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable('Users', {
+	async up( queryInterface, Sequelize ) {
+		await queryInterface.createTable( 'Users', {
 			_id: {
 				type: Sequelize.INTEGER,
 				autoIncrement: true,
@@ -23,15 +23,13 @@ module.exports = {
 				type: Sequelize.STRING,
 				allowNull: false,
 			},
-			createdAt: Sequelize.DATE,
-			updatedAt: Sequelize.DATE,
-		});
+		} );
 
 		// Adding indexes for performance optimization
 
 	},
 
-	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable('Users');
+	async down( queryInterface, Sequelize ) {
+		await queryInterface.dropTable( 'Users' );
 	},
 };
