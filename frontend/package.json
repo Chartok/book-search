@@ -24,7 +24,11 @@
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.5.2",
     "autoprefixer": "^10.4.21",
+<<<<<<< HEAD
     "dotenv": "^17.0.1",
+=======
+    "concurrently": "^9.2.0",
+>>>>>>> de5142806a72dc358f664c9ce6f2031cf0823863
     "eslint": "^9.29.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
