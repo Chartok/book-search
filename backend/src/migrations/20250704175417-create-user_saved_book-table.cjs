@@ -13,7 +13,7 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
-					model: 'Users',
+					model: 'User',
 					key: '_id',
 				},
 			},
@@ -21,7 +21,7 @@ module.exports = {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {
-					model: 'Books',
+					model: 'Book',
 					key: 'bookId',
 				},
 			},
@@ -38,8 +38,10 @@ module.exports = {
 	},
 
 	async down(queryInterface, Sequelize) {
+		await queryInterface.dropTable('user_saved_books'); // Drop the user_saved_books table
 		await queryInterface.dropTable('user_saved_books');
 		await queryInterface.sequelize.query(
+			'DROP TYPE IF EXISTS "enum_user_saved_books_shelf";'
 			'DROP TYPE IF EXISTS "enum_user_saved_books_shelf";'
 		); // Drop the ENUM type if it exists
 	},
