@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS Books (
     nextBook BOOLEAN DEFAULT FALSE,
     finishedBook BOOLEAN DEFAULT FALSE,
     userId INT,
-    FOREIGN KEY (userId) REFERENCES users(_id) ON DELETE CASCADE
+    FOREIGN KEY (userId) REFERENCES Users(_id) ON DELETE CASCADE
 );
 
 -- Join table to track which books a user has saved
@@ -51,6 +51,6 @@ CREATE TABLE IF NOT EXISTS user_saved_books (
     UNIQUE KEY user_book_unique (user_id, book_id),
     INDEX idx_user_id (user_id),
     INDEX idx_book_id (book_id),
-    FOREIGN KEY (user_id) REFERENCES users(_id) ON DELETE CASCADE,
-    FOREIGN KEY (book_id) REFERENCES books(bookId) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES Users(_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES Books(bookId) ON DELETE CASCADE
 );
