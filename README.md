@@ -2,7 +2,7 @@
 
 ## Description
 
-A simple book search engine using RESTful API.
+A simple REST book search engine using Google Books API.
 
 ## Table of Contents
 
